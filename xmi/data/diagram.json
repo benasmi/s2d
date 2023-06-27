@@ -1,58 +1,61 @@
-[
-  {
-    "id": "use_case_1",
-    "type": "use_case",
-    "name": "PA1",
-    "include": "use_case_2"
-  },
-  {
-    "id": "use_case_2",
-    "type": "use_case",
-    "name": "PA2"
-  },
-  {
-    "id": "use_case_3",
-    "type": "use_case",
-    "name": "PA3",
-    "extends_use_case": {
+{
+  "name": "Generated UC Diagram",
+  "elements": [
+    {
       "id": "use_case_1",
-      "extension": "jei nori praplėsti"
-    }
-  },
-  {
-    "id": "actor_1",
-    "type": "actor",
-    "name": "Aktorius 1"
-  },
-  {
-    "id": "actor_2",
-    "type": "actor",
-    "name": "Aktorius 2",
-    "extends_association": "actor_1"
-  },
-  {
-    "id": "association_1",
-    "type": "association",
-    "name": "",
-    "cardinality": {
-      "start": "1",
-      "end": "1..*"
+      "type": "use_case",
+      "name": "PA1",
+      "include": "use_case_2"
     },
-    "navigable": false
-  },
-  {
-    "id": "association_generalization_1",
-    "type": "association_generalization",
-    "name": ""
-  },
-  {
-    "id": "association_include_1",
-    "type": "association_include",
-    "name": ""
-  },
-  {
-     "id": "association_exclude_1",
-    "type": "association_exclude",
-    "name": ""
-  }
-]
+    {
+      "id": "use_case_2",
+      "type": "use_case",
+      "name": "PA2"
+    },
+    {
+      "id": "use_case_3",
+      "type": "use_case",
+      "name": "PA3",
+      "extends_use_case": {
+        "id": "use_case_1",
+        "extension": "jei nori praplėsti"
+      }
+    },
+    {
+      "id": "actor_1",
+      "type": "actor",
+      "name": "Aktorius 1"
+    },
+    {
+      "id": "actor_2",
+      "type": "actor",
+      "name": "Aktorius 2",
+      "extends_association": "actor_1"
+    },
+    {
+      "id": "association_1",
+      "type": "association",
+      "name": "",
+      "cardinality": {
+        "start": "1",
+        "end": "1..*"
+      },
+      "navigable": false
+    },
+    {
+      "id": "association_generalization_1",
+      "type": "association_generalization",
+      "name": ""
+    },
+    {
+      "id": "association_include_1",
+      "type": "association_include",
+      "name": ""
+    },
+    {
+      "id": "association_exclude_1",
+      "type": "association_exclude",
+      "name": ""
+    }
+  ]
+}
