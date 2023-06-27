@@ -3,6 +3,14 @@ import uuid
 from enum import Enum
 import xml.etree.ElementTree as ET
 
+PackagedElementType = {
+    "use_case": "uml:UseCase",
+    "actor": "uml:Actor",
+    "include": "uml:Include",
+    "association": "uml:Association"
+
+}
+
 
 class SymbolType(Enum):
     use_case = 'use_case'
@@ -21,12 +29,12 @@ def create_root_el():
 
 
 def create_package_el(package_name):
-    package_el = ET.Element("uml:Package")
-    package_el.set("xmi:id", uuid.uuid4().hex)
-    package_el.set("xmi:label", package_name)
-    package_el.set("name", package_name)
+    el = ET.Element("uml:Package")
+    el.set("xmi:id", uuid.uuid4().hex)
+    el.set("xmi:label", package_name)
+    el.set("name", package_name)
 
-    return package_el
+    return el
 
 
 def write_xmi(root, filename):
@@ -37,13 +45,27 @@ def write_xmi(root, filename):
         f.write(xml)
 
 
+def create_packaged_el(symbol) -> ET.Element:
+    el = ET.Element("packagedElement")
+    el.set("xmi:type", PackagedElementType[symbol['type']])
+    el.set("xmi:id", symbol['id'])
+    if symbol['name']:
+        el.set("name", symbol['name'])
+
+    return el
+
+
 # Read diagram
 diagram = json.load(open('./data/diagram.json'))
 
-# Preprocess
+# Create root element
 root_el = create_root_el()
 package_el = create_package_el(diagram['name'])
 root_el.append(package_el)
+
+# Create packaged elements
+packaged_elements = list(map(lambda el: create_packaged_el(el), diagram['elements']))
+[root_el.append(el) for el in packaged_elements]
 
 # Write xmi
 write_xmi(root_el, diagram['name'])
