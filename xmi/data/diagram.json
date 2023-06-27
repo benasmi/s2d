@@ -8,6 +8,12 @@
       "include": {
         "type": "include",
         "ref": "use_case_2"
+      },
+      "extend_from": {
+        "type": "extension_point",
+        "extend_id": "extension_1",
+        "extension_id": "extension_point_1",
+        "name": "jei nori praplesti"
       }
     },
     {
@@ -19,10 +25,11 @@
       "id": "use_case_3",
       "type": "use_case",
       "name": "PA3",
-      "extend": {
+      "extend_to": {
         "type": "extend",
         "ref": "use_case_1",
-        "extension": "jei nori praplėsti"
+        "extend_id": "extension_1",
+        "extension_id": "extension_point_1"
       }
     },
     {
