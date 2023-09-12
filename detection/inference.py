@@ -6,7 +6,9 @@ import warnings
 import tensorflow as tf
 import time
 
-from official.vision.utils.object_detection import visualization_utils as viz_utils
+from object_detection.utils import label_map_util
+from object_detection.utils import visualization_utils as viz_utils
+
 import matplotlib
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress TensorFlow logging (1)
@@ -24,44 +26,18 @@ print('Loading model...', end='')
 start_time = time.time()
 
 # Load saved model and build the detection function
-detect_fn = tf.saved_model.load("model/model.pb")
+absolute_path = os.path.dirname(__file__)
+
+full_path = os.path.join(absolute_path, "model\saved_model")
+detect_fn = tf.saved_model.load(full_path)
 
 end_time = time.time()
 elapsed_time = end_time - start_time
 print('Done! Took {} seconds'.format(elapsed_time))
 
 warnings.filterwarnings('ignore')  # Suppress Matplotlib warnings
-
-category_index = {
-    1: {
-        'id': 1,
-        'name': 'actor'
-    },
-    2: {
-        'id': 2,
-        'name': 'use_case'
-    },
-    3: {
-        'id': 3,
-        'name': 'text'
-    },
-    4: {
-        'id': 4,
-        'name': 'generalization'
-    },
-    5: {
-        'id': 5,
-        'name': 'dotted_line'
-    },
-    6: {
-        'id': 6,
-        'name': 'line'
-    },
-    7: {
-        'id': 7,
-        'name': 'arrow_head'
-    }
-}
+category_index = label_map_util.create_category_index_from_labelmap("model/label_map.pbtxt",
+                                                                    use_display_name=True)
 
 
 def inference(path):

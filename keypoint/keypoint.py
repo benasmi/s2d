@@ -1,22 +1,22 @@
-import cv2
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
 
-# read input image
-img = cv2.imread('data/line2.JPG')
+img = cv.imread('data/line3.JPG', cv.IMREAD_GRAYSCALE)
+assert img is not None, "file could not be read, check with os.path.exists()"
+ret, thresh1 = cv.threshold(img, 127, 255, cv.THRESH_BINARY)
 
-# convert the image to grayscale
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-# Initiate SIFT object with default values
-sift = cv2.SIFT_create()
+'''
+print(thresh1)
+titles = ['Original', 'BINARY']
+images = [img, thresh1]
 
-# find the keypoints on image (grayscale)
-kp = sift.detect(gray, None)
-
-print(kp)
-# draw keypoints in image
-img2 = cv2.drawKeypoints(gray, kp, None, flags=0)
-
-# display the image with keypoints drawn on it
-cv2.imshow("Keypoints", img2)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+for i in range(2):
+    print(i)
+    plt.subplot(1, 2, i + 1)
+    plt.imshow(images[i], 'gray', vmin=0, vmax=255)
+    plt.title(titles[i])
+    plt.xticks([]), plt.yticks([])
+plt.show()
+'''
