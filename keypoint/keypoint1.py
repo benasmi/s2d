@@ -6,6 +6,8 @@ img = cv.imread('data/line3.JPG', cv.IMREAD_GRAYSCALE)
 assert img is not None, "file could not be read, check with os.path.exists()"
 ret, thresh1 = cv.threshold(img, 127, 255, cv.THRESH_BINARY)
 
+
+'''
 print(thresh1)
 titles = ['Original', 'BINARY']
 images = [img, thresh1]
@@ -17,3 +19,4 @@ for i in range(2):
     plt.title(titles[i])
     plt.xticks([]), plt.yticks([])
 plt.show()
+'''

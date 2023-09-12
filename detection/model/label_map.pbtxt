@@ -1,0 +1,36 @@
+item {
+   id: 1
+   name: 'actor'
+}
+
+item {
+   id: 2
+   name: 'use_case'
+}
+
+item {
+   id: 3
+   name: 'text'
+}
+
+item {
+   id: 4
+   name: 'generalization'
+}
+
+item {
+   id: 5
+   name: 'dotted_line'
+}
+
+item {
+   id: 6
+   name: 'line'
+}
+
+item {
+   id: 7
+   name: 'arrow_head'
+}
+
+
