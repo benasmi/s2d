@@ -40,40 +40,33 @@ warnings.filterwarnings('ignore')  # Suppress Matplotlib warnings
 category_index = label_map_util.create_category_index_from_labelmap(label_path, use_display_name=True)
 
 
-def inference(path):
+def inference(path, min_thresh):
     print('Running inference for {}... '.format(path), end='')
 
     im = Image.open(path)
     im = im.convert("RGB")
     image_np = np.array(im)
 
-    # Things to try:
-    # Flip horizontally
-    # image_np = np.fliplr(image_np).copy()
-
-    # Convert image to grayscale
-    # image_np = np.tile(
-    #     np.mean(image_np, 2, keepdims=True), (1, 1, 3)).astype(np.uint8)
-
-    # The input needs to be a tensor, convert it using `tf.convert_to_tensor`.
     input_tensor = tf.convert_to_tensor(image_np)
-    # The model expects a batch of images, so add an axis with `tf.newaxis`.
     input_tensor = input_tensor[tf.newaxis, ...]
-    # input_tensor = input_tensor[:, :, :, :3]  # <= add this line
-    # input_tensor = np.expand_dims(image_np, 0)
+
     detections = detect_fn(input_tensor)
 
-    # All outputs are batches tensors.
-    # Convert to numpy arrays, and take index [0] to remove the batch dimension.
-    # We're only interested in the first num_detections.
     num_detections = int(detections.pop('num_detections'))
     detections = {key: value[0, :num_detections].numpy()
                   for key, value in detections.items()}
     detections['num_detections'] = num_detections
-
-    # detection_classes should be ints.
     detections['detection_classes'] = detections['detection_classes'].astype(np.int64)
 
+    print(detections['num_detections'])
+    print(detections.keys())
+
+    indices = list(filter(lambda idx: detections['detection_scores'][idx] >= min_thresh,
+                          range(detections['num_detections'])))
+
+    for (key, value) in detections.items():
+        if key != 'num_detections':
+            detections[key] = np.take(detections[key], indices, 0)
 
     return image_np.copy(), detections
 
@@ -87,7 +80,6 @@ def plot_inference(img_numpy, detections):
         category_index,
         use_normalized_coordinates=True,
         max_boxes_to_draw=200,
-        min_score_thresh=.2,
         agnostic_mode=False)
 
     plt.figure()
