@@ -40,12 +40,8 @@ warnings.filterwarnings('ignore')  # Suppress Matplotlib warnings
 category_index = label_map_util.create_category_index_from_labelmap(label_path, use_display_name=True)
 
 
-def inference(path, min_thresh):
-    print('Running inference for {}... '.format(path), end='')
-
-    im = Image.open(path)
-    im = im.convert("RGB")
-    image_np = np.array(im)
+def inference(image, min_thresh):
+    image_np = np.array(image)
 
     input_tensor = tf.convert_to_tensor(image_np)
     input_tensor = input_tensor[tf.newaxis, ...]
