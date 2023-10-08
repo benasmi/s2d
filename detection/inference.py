@@ -28,16 +28,16 @@ start_time = time.time()
 # Load saved model and build the detection function
 absolute_path = os.path.dirname(__file__)
 
-full_path = os.path.join(absolute_path, "model\saved_model")
-detect_fn = tf.saved_model.load(full_path)
+model_path = os.path.join(absolute_path, "model\saved_model")
+detect_fn = tf.saved_model.load(model_path)
 
 end_time = time.time()
 elapsed_time = end_time - start_time
 print('Done! Took {} seconds'.format(elapsed_time))
 
+label_path = os.path.join(absolute_path, "model\label_map.pbtxt")
 warnings.filterwarnings('ignore')  # Suppress Matplotlib warnings
-category_index = label_map_util.create_category_index_from_labelmap("model/label_map.pbtxt",
-                                                                    use_display_name=True)
+category_index = label_map_util.create_category_index_from_labelmap(label_path, use_display_name=True)
 
 
 def inference(path):
@@ -74,10 +74,13 @@ def inference(path):
     # detection_classes should be ints.
     detections['detection_classes'] = detections['detection_classes'].astype(np.int64)
 
-    image_np_with_detections = image_np.copy()
 
+    return image_np.copy(), detections
+
+
+def plot_inference(img_numpy, detections):
     viz_utils.visualize_boxes_and_labels_on_image_array(
-        image_np_with_detections,
+        img_numpy,
         detections['detection_boxes'],
         detections['detection_classes'],
         detections['detection_scores'],
@@ -88,10 +91,7 @@ def inference(path):
         agnostic_mode=False)
 
     plt.figure()
-    plt.imshow(image_np_with_detections)
+    plt.imshow(img_numpy)
     print('Done')
     print('Plotting')
     plt.show()
-
-inference("./data/images/PA12.png")
-# sphinx_gallery_thumbnail_number = 2
