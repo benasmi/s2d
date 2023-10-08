@@ -68,7 +68,7 @@ def inference(path, min_thresh):
         if key != 'num_detections':
             detections[key] = np.take(detections[key], indices, 0)
 
-    return image_np.copy(), detections
+    return image_np.copy(), detections, category_index
 
 
 def plot_inference(img_numpy, detections):
@@ -86,4 +86,4 @@ def plot_inference(img_numpy, detections):
     plt.imshow(img_numpy)
     print('Done')
     print('Plotting')
-    plt.show()
+    plt.show(block=False)
