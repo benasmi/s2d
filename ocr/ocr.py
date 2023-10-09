@@ -13,4 +13,4 @@ def img_path_to_string(path):
 
 
 def image_to_string(image):
-    return pytesseract.image_to_string(image)
+    return pytesseract.image_to_string(image).strip()
