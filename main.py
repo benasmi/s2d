@@ -6,7 +6,6 @@ import uuid
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
 
-
 class DetectionBox:
     def __init__(self, image, coordinates, label, score):
         width, height = image.size
@@ -32,6 +31,14 @@ class DetectionBox:
         self.score = score
         self.used = False
         self.text = None
+
+
+def crop_box_from_image(box, image):
+    lt_coords = box.coordinates[0]
+    br_coords = box.coordinates[3]
+
+    return image.crop((lt_coords[0], lt_coords[1], br_coords[0], br_coords[1]))
+
 
 # Read image
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
@@ -61,10 +68,7 @@ for i in range(len(detections['detection_scores'])):
 # Digitize text for 'text' boxes
 for b in boxes:
     if b.label == 'text':
-        lt_coords = b.coordinates[0]
-        br_coords = b.coordinates[3]
-
-        img_res = image.crop((lt_coords[0], lt_coords[1], br_coords[0], br_coords[1]))
+        img_res = crop_box_from_image(b, image)
         b.text = ocr.image_to_string(img_res)
 
 # Attach text to elements
@@ -75,7 +79,7 @@ text_boxes = list(filter(lambda x: x.label == 'text' and x.used == False, boxes)
 
 for uc_b in use_case_boxes:
     target_t_b = None
-    min_distance = 2000000000
+    min_distance = float('inf')
     for t_b in text_boxes:
         if t_b.used is True:
             continue
@@ -85,6 +89,24 @@ for uc_b in use_case_boxes:
             target_t_b = t_b
     target_t_b.used = True
     uc_b.text = target_t_b.text
-    
+
+# ---> Set dotted_line type and extension + actor names
+text_boxes = list(filter(lambda x: x.label == 'text' and x.used == False, boxes))
+non_text_boxes = list(filter(lambda x: (x.label == 'dotted_line' or x.label == 'actor') and x.text is None, boxes))
+
+for t_b in text_boxes:
+    target_nt_b = None
+    min_distance = float('inf')
+    for nt_b in non_text_boxes:
+        euc_distance = distance.euclidean(t_b.coordinates[4], nt_b.coordinates[4])
+        if euc_distance < min_distance:
+            min_distance = euc_distance
+            target_nt_b = nt_b
+
+    t_b.used = True
+    if target_nt_b.text is None:
+        target_nt_b.text = t_b.text
+    else:
+        target_nt_b.text = target_nt_b.text + "<--->" + t_b.text
 
 plt.show()
