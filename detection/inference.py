@@ -1,6 +1,5 @@
 import os
 import numpy as np
-from PIL import Image
 import matplotlib.pyplot as plt
 import warnings
 import tensorflow as tf
@@ -53,9 +52,6 @@ def inference(image, min_thresh):
                   for key, value in detections.items()}
     detections['num_detections'] = num_detections
     detections['detection_classes'] = detections['detection_classes'].astype(np.int64)
-
-    print(detections['num_detections'])
-    print(detections.keys())
 
     indices = list(filter(lambda idx: detections['detection_scores'][idx] >= min_thresh,
                           range(detections['num_detections'])))

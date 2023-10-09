@@ -66,4 +66,5 @@ for b in boxes:
         img_res = image.crop((lt_coords[0], lt_coords[1], br_coords[0], br_coords[1]))
         b.text = ocr.image_to_string(img_res)
 
+
 plt.show()
