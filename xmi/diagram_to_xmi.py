@@ -1,4 +1,3 @@
-import json
 import uuid
 from enum import Enum
 import xml.etree.ElementTree as ET
@@ -104,23 +103,25 @@ def write_xmi(root, filename):
     ET.indent(root, space="\t", level=0)
     xml = ET.tostring(root)
 
-    with open("./data/" + filename + ".xml", "wb") as f:
+    with open(filename + ".xml", "wb") as f:
         f.write(xml)
 
+    return xml
 
-# Read diagram
-diagram = json.load(open('./data/diagram.json'))
 
-# Create root element
-root_el = create_root_el()
-package_el = create_package_el(diagram['name'])
-root_el.append(package_el)
+def convert_to_xmi(diagram):
+    # Create root element
+    root_el = create_root_el()
+    package_el = create_package_el(diagram['name'])
+    root_el.append(package_el)
 
-elements = diagram['elements']
+    elements = diagram['elements']
 
-# Create packaged elements
-packaged_elements = list(map(lambda el: create_packaged_el(el), elements))
-[root_el.append(el) for el in packaged_elements]
+    # Create packaged elements
+    packaged_elements = list(map(lambda el: create_packaged_el(el), elements))
+    [root_el.append(el) for el in packaged_elements]
 
-# Write xmi
-write_xmi(root_el, diagram['name'])
+    # Write xmi
+    return write_xmi(root_el, diagram['name'])
+
+# diagram = json.load(open('./data/diagram.json'))

@@ -5,7 +5,7 @@ from box import KeyPoints
 extend_kp_px = 40
 mid_point_kp_thresh = 40
 bin_thresh = 180
-debug = True
+debug = False
 
 
 def calculate_key_points(image, box):
@@ -46,6 +46,7 @@ def calculate_low_width_key_points(image, box):
     if not determine_start_end(box):
         return keypoint, extended_keypoint
 
+    #todo: implement
     bottom_box = image.crop(0, height - 40, width, height)
     top_box = image.crop(0, 0, width, 40)
 

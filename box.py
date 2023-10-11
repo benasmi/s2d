@@ -8,19 +8,12 @@ class KeyPoints:
         self.end = end
         self.type = type
 
-    def get_ext_start(self):
-        if type == 'low_height':
-            return (self.start[0] - self.ext_px, self.start[1]), (self.end[0] + self.ext_px, self.end[1])
-        elif type == 'low_width':
-            return (self.start[0], self.start[1] - self.ext_px), (self.end[0], self.end[1] + self.ext_px)
-
-        return self.start, self.end
 class BoundingBox:
     def __init__(self, image, coordinates, label, score):
         width, height = image.size
         ymin, xmin, ymax, xmax = coordinates[0:4]
 
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().hex
         self.ymin = ymin * height
         self.ymax = ymax * height
         self.xmin = xmin * width

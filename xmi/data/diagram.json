@@ -50,6 +50,8 @@
       "id": "association_1",
       "type": "association",
       "name": "",
+      "start": "actor_1",
+      "end": "use_case_1",
       "cardinality": {
         "start": {
           "type": "property",
