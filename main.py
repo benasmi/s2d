@@ -1,36 +1,12 @@
 import os
-from detection import inference
-from ocr import ocr
-from PIL import Image
-import uuid
+
 import matplotlib.pyplot as plt
+from PIL import Image
 from scipy.spatial import distance
-
-class DetectionBox:
-    def __init__(self, image, coordinates, label, score):
-        width, height = image.size
-        ymin, xmin, ymax, xmax = coordinates[0:4]
-
-        self.id = uuid.uuid4()
-        self.normalized_coordinates = [
-            (xmin, ymin),
-            (xmin, ymax),
-            (xmax, ymin),
-            (xmax, ymax),
-            ((xmax + xmin) / 2, (ymax + ymin) / 2)
-        ]
-
-        self.coordinates = [
-            (xmin * width, ymin * height),
-            (xmin * width, ymax * height),
-            (xmax * width, ymin * height),
-            (xmax * width, ymax * height),
-            ((xmax * width + xmin * width) / 2, (ymax * height + ymin * height) / 2)
-        ]
-        self.label = label
-        self.score = score
-        self.used = False
-        self.text = None
+from box import BoundingBox
+from detection import inference
+from keypoint import keypoint
+from ocr import ocr
 
 
 def crop_box_from_image(box, image):
@@ -57,7 +33,7 @@ inference.plot_inference(img_for_plot, detections)
 # Map to box items
 boxes = []
 for i in range(len(detections['detection_scores'])):
-    box = DetectionBox(
+    box = BoundingBox(
         image,
         detections['detection_boxes'][i],
         category_index[detections['detection_classes'][i]]['name'],
@@ -108,5 +84,13 @@ for t_b in text_boxes:
         target_nt_b.text = t_b.text
     else:
         target_nt_b.text = target_nt_b.text + "<--->" + t_b.text
+
+# Calculate key points
+associations = list(
+    filter(lambda x: x.label == 'generalization' or x.label == 'dotted_line' or x.label == 'line', boxes))
+
+for assoc in associations:
+    assoc_image = crop_box_from_image(assoc, image)
+    assoc.key_points = keypoint.calculate_key_points(assoc_image, assoc)
 
 plt.show()
