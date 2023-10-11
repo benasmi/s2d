@@ -12,7 +12,7 @@ from ocr import ocr
 debug = False
 
 
-def crop_box_from_image(box, image):
+def crop_image(box, image):
     lt_coords = box.coordinates[0]
     br_coords = box.coordinates[3]
 
@@ -60,7 +60,7 @@ for i in range(len(detections['detection_scores'])):
 # Digitize text for 'text' boxes
 for b in boxes:
     if b.label == 'text':
-        img_res = crop_box_from_image(b, image)
+        img_res = crop_image(b, image)
         b.text = ocr.image_to_string(img_res)
 
 # Attach text to elements
@@ -95,7 +95,7 @@ associations = list(
     filter(lambda x: x.label == 'generalization' or x.label == 'dotted_line' or x.label == 'line', boxes))
 
 for assoc in associations:
-    assoc_image = crop_box_from_image(assoc, image)
+    assoc_image = crop_image(assoc, image)
     assoc.key_points = keypoint.calculate_key_points(assoc_image, assoc)
 
 
