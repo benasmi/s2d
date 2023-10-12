@@ -9,7 +9,7 @@ from keypoint import keypoint
 from xmi import diagram_to_xmi
 from ocr import ocr
 
-debug = False
+debug = True
 
 
 def crop_image(box, image):
@@ -34,14 +34,14 @@ def get_closest_box_to_point(point, boxes):
 
 # Read image
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
-rel_path = "detection\data\images\PA12.png"
+rel_path = "detection\data\images\PA1.png"
 abs_file_path = os.path.join(script_dir, rel_path)
 image = Image.open(abs_file_path)
 image = image.convert("RGB")
 
 # Do inference
 print('Running inference for {}... '.format(abs_file_path), end='')
-img_for_plot, detections, category_index = inference.inference(image, min_thresh=.2)
+img_for_plot, detections, category_index = inference.inference(image, min_thresh=.5)
 
 # Plot inference
 inference.plot_inference(img_for_plot, detections)
