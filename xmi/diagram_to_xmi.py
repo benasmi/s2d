@@ -62,7 +62,47 @@ def create_packaged_el(symbol) -> ET.Element:
         generalization_el = create_generalization_el(symbol['generalization'])
         el.append(generalization_el)
 
+    if 'start' in symbol:
+        association_elements = create_association_elements(symbol)
+        for assoc_el in association_elements:
+            el.append(assoc_el)
+
     return el
+
+
+def create_association_elements(symbol):
+    assoc_id = symbol['id']
+
+    mem_end_el_1 = ET.Element("memberEnd")
+    mem_end_el_1_id = assoc_id + "_member_end_1"
+    mem_end_el_1.set("xmi:idref", mem_end_el_1_id)
+
+    mem_end_el_2 = ET.Element("memberEnd")
+    mem_end_el_2_id = assoc_id + "_member_end_2"
+    mem_end_el_2.set("xmi:idref", mem_end_el_2_id)
+
+    navigable_end_el_1 = ET.Element("navigableOwnedEnd")
+    navigable_end_el_1.set("xmi:idref", mem_end_el_1_id)
+
+    navigable_end_el_2 = ET.Element("navigableOwnedEnd")
+    navigable_end_el_2.set("xmi:idref", mem_end_el_2_id)
+
+    owned_end_el_1 = ET.Element("ownedEnd")
+    owned_end_el_1.set("xmi:type", "uml:Property")
+    owned_end_el_1.set("xmi:id", mem_end_el_1_id)
+    owned_end_el_1.set("visibility", "private")
+    owned_end_el_1.set("type", symbol['start'])
+    owned_end_el_1.set("association", assoc_id)
+
+    owned_end_el_2 = ET.Element("ownedEnd")
+    owned_end_el_2.set("xmi:type", "uml:Property")
+    owned_end_el_2.set("xmi:id", mem_end_el_2_id)
+    owned_end_el_2.set("visibility", "private")
+    owned_end_el_2.set("type", symbol['end'])
+    owned_end_el_2.set("association", assoc_id)
+
+    return [mem_end_el_1, mem_end_el_2, navigable_end_el_1, navigable_end_el_2, owned_end_el_1, owned_end_el_2]
+
 
 def create_generalization_el(generalization):
     gen_el = ET.Element("generalization")
@@ -137,6 +177,7 @@ def convert_to_xmi(diagram):
 
     # Write xmi
     return write_xmi(root_el, diagram['name'])
+
 
 diagram = json.load(open('./data/diagram.json'))
 convert_to_xmi(diagram)
