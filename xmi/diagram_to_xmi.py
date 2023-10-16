@@ -1,4 +1,5 @@
 import uuid
+import json
 from enum import Enum
 import xml.etree.ElementTree as ET
 
@@ -8,7 +9,8 @@ PackagedElementType = {
     "include": "uml:Include",
     "association": "uml:Association",
     "extension_point": "uml:ExtensionPoint",
-    "extend": "uml:Extend"
+    "extend": "uml:Extend",
+    "generalization": "uml:Generalization"
 }
 
 
@@ -56,11 +58,23 @@ def create_packaged_el(symbol) -> ET.Element:
         extend_el = create_extend_el(symbol['extend_to'])
         el.append(extend_el)
 
+    if 'generalization' in symbol:
+        generalization_el = create_generalization_el(symbol['generalization'])
+        el.append(generalization_el)
+
     return el
+
+def create_generalization_el(generalization):
+    gen_el = ET.Element("generalization")
+    gen_el.set("xmi:type", PackagedElementType[generalization['type']])
+    gen_el.set("xmi:id", uuid.uuid4().hex)
+    gen_el.set("general", generalization['ref'])
+
+    return gen_el
 
 
 def create_extend_el(extend):
-    extend_el = ET.Element("extensionPoint")
+    extend_el = ET.Element("extend")
     extend_el.set("xmi:type", PackagedElementType[extend['type']])
     extend_el.set("xmi:id", extend['extend_id'])
     extend_el.set("visibility", "public")
@@ -124,4 +138,5 @@ def convert_to_xmi(diagram):
     # Write xmi
     return write_xmi(root_el, diagram['name'])
 
-# diagram = json.load(open('./data/diagram.json'))
+diagram = json.load(open('./data/diagram.json'))
+convert_to_xmi(diagram)
