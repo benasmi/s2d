@@ -78,7 +78,7 @@ def create_extend_el(extend):
     extend_el.set("xmi:type", PackagedElementType[extend['type']])
     extend_el.set("xmi:id", extend['extend_id'])
     extend_el.set("visibility", "public")
-    extend_el.set("extendCase", extend['ref'])
+    extend_el.set("extendedCase", extend['ref'])
 
     extension_loc_el = ET.Element("extensionLocation")
     extension_loc_el.set("xmi:idref", extend['extension_id'])
