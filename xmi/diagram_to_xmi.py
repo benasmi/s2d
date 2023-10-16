@@ -119,7 +119,7 @@ def convert_to_xmi(diagram):
 
     # Create packaged elements
     packaged_elements = list(map(lambda el: create_packaged_el(el), elements))
-    [root_el.append(el) for el in packaged_elements]
+    [package_el.append(el) for el in packaged_elements]
 
     # Write xmi
     return write_xmi(root_el, diagram['name'])
