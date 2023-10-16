@@ -179,5 +179,5 @@ def convert_to_xmi(diagram):
     return write_xmi(root_el, diagram['name'])
 
 
-diagram = json.load(open('./data/diagram.json'))
-convert_to_xmi(diagram)
+#diagram = json.load(open('./data/diagram.json'))
+#convert_to_xmi(diagram)

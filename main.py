@@ -34,7 +34,7 @@ def get_closest_box_to_point(point, boxes):
 
 # Read image
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
-rel_path = "detection\data\images\PA12.png"
+rel_path = "detection\data\images\PA23.png"
 abs_file_path = os.path.join(script_dir, rel_path)
 image = Image.open(abs_file_path)
 image = image.convert("RGB")
@@ -103,7 +103,7 @@ for assoc in associations:
 def gen_el_json(el):
     return {
         'id': el.id,
-        'type': el.label,
+        'type': 'association' if el.label == 'line' else el.label,
         'name': el.text
     }
 
@@ -137,13 +137,21 @@ for assoc in associations:
         print("implement")
     elif assoc.label == 'generalization':
         print("implement")
+    else:
+        assoc_el_json = gen_el_json(assoc)
+        assoc_el_json['start'] = start_kp_el.id
+        assoc_el_json['end'] = end_kp_el.id
+        diagram['elements'].append(assoc_el_json)
 
-    diagram['elements'].append(start_kp_el_json)
-    diagram['elements'].append(end_kp_el_json)
+    existing_ids = list(map(lambda x: x['id'], diagram['elements']))
+    if start_kp_el.id not in existing_ids:
+        diagram['elements'].append(start_kp_el_json)
 
-if debug:
-    diagram_json = json.dumps(diagram)
-    print("Diagram json", diagram_json)
+    if end_kp_el.id not in existing_ids:
+        diagram['elements'].append(end_kp_el_json)
+
+diagram_json = json.dumps(diagram)
+print("Diagram json", diagram_json)
 
 # Convert to XMI
 xmi = diagram_to_xmi.convert_to_xmi(diagram)
