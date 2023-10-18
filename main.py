@@ -34,7 +34,7 @@ def get_closest_box_to_point(point, boxes):
 
 # Read image
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
-rel_path = "detection\data\images\PA23.png"
+rel_path = "detection\data\images\PA24.png"
 abs_file_path = os.path.join(script_dir, rel_path)
 image = Image.open(abs_file_path)
 image = image.convert("RGB")
@@ -63,6 +63,10 @@ for b in boxes:
         img_res = crop_image(b, image)
         b.text = ocr.image_to_string(img_res)
 
+        if "extension points\n" in b.text:
+            b.used = True
+
+
 # Attach text to elements
 
 # ---> Set name to use_case elements
@@ -71,7 +75,7 @@ use_case_boxes = list(filter(lambda x: x.label == 'use_case', boxes))
 for uc_b in use_case_boxes:
     t_b = get_closest_box_to_point(
         uc_b.coordinates[4],
-        list(filter(lambda x: x.label == 'text' and not x.used, boxes))
+        list(filter(lambda x: x.label == 'text' and not x.used and not "extension points" in x.text, boxes))
     )
 
     t_b.used = True
@@ -134,9 +138,15 @@ for assoc in associations:
             'ref': end_kp_el.id
         }
     elif assoc.label == 'dotted_line' and "extend" in assoc.text:
-        print("implement")
+        extensions = list(filter(lambda x: "extend" not in x and x.startswith("("), assoc.text.split("<-->")))
+        extension = extensions[0] if len(extensions) >= 1 else "Default_extension"
+
     elif assoc.label == 'generalization':
-        print("implement")
+        end_kp_el_json['generalization'] = {
+            "type": "generalization",
+            "ref": start_kp_el.id
+        }
+        diagram['elements'] = [el if el['id'] is not end_kp_el.id else end_kp_el_json for el in diagram['elements']]
     else:
         assoc_el_json = gen_el_json(assoc)
         assoc_el_json['start'] = start_kp_el.id

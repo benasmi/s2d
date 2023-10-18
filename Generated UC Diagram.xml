@@ -1,0 +1,27 @@
+<xmi:XMI xmlns:uml="http://www.omg.org/spec/UML/20110701" xmlns:xmi="http://www.omg.org/spec/UML/20110701">
+	<uml:Package xmi:id="24e178dd485845ccaf18a5bf1aa4dc5a" xmi:label="Generated UC Diagram" name="Generated UC Diagram">
+		<packagedElement xmi:type="uml:Association" xmi:id="2abcc84830e74f53bb074677f3419c83">
+			<memberEnd xmi:idref="2abcc84830e74f53bb074677f3419c83_member_end_1" />
+			<memberEnd xmi:idref="2abcc84830e74f53bb074677f3419c83_member_end_2" />
+			<navigableOwnedEnd xmi:idref="2abcc84830e74f53bb074677f3419c83_member_end_1" />
+			<navigableOwnedEnd xmi:idref="2abcc84830e74f53bb074677f3419c83_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="2abcc84830e74f53bb074677f3419c83_member_end_1" visibility="private" type="61a0ba525b894376a84083e13cd61c28" association="2abcc84830e74f53bb074677f3419c83" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="2abcc84830e74f53bb074677f3419c83_member_end_2" visibility="private" type="88c5f3a95cf447a4bb5e929020d746b7" association="2abcc84830e74f53bb074677f3419c83" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="61a0ba525b894376a84083e13cd61c28" name="Read" />
+		<packagedElement xmi:type="uml:Actor" xmi:id="88c5f3a95cf447a4bb5e929020d746b7" name="Actor 1" />
+		<packagedElement xmi:type="uml:Association" xmi:id="54696595b893414d8e96976ee6cd95c9">
+			<memberEnd xmi:idref="54696595b893414d8e96976ee6cd95c9_member_end_1" />
+			<memberEnd xmi:idref="54696595b893414d8e96976ee6cd95c9_member_end_2" />
+			<navigableOwnedEnd xmi:idref="54696595b893414d8e96976ee6cd95c9_member_end_1" />
+			<navigableOwnedEnd xmi:idref="54696595b893414d8e96976ee6cd95c9_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="54696595b893414d8e96976ee6cd95c9_member_end_1" visibility="private" type="88c5f3a95cf447a4bb5e929020d746b7" association="54696595b893414d8e96976ee6cd95c9" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="54696595b893414d8e96976ee6cd95c9_member_end_2" visibility="private" type="61a0ba525b894376a84083e13cd61c28" association="54696595b893414d8e96976ee6cd95c9" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="89e02e9d96924b41b86d903d2e316485" name="Listen" />
+		<packagedElement xmi:type="uml:UseCase" xmi:id="c093464ff04d4a00a8e6307957efe3d8" name="extension points&#10;if reading" />
+		<packagedElement xmi:type="uml:Actor" xmi:id="59495d429010442b9cabb4b040b63890" name="Actor 2">
+			<generalization xmi:type="uml:Generalization" xmi:id="0483c6eaf37f49fdbb896e8596c49334" general="88c5f3a95cf447a4bb5e929020d746b7" />
+		</packagedElement>
+	</uml:Package>
+</xmi:XMI>
