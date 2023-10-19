@@ -1,5 +1,6 @@
 import os
 import json
+import uuid
 import matplotlib.pyplot as plt
 from PIL import Image
 from scipy.spatial import distance
@@ -66,7 +67,6 @@ for b in boxes:
         if "extension points\n" in b.text:
             b.used = True
 
-
 # Attach text to elements
 
 # ---> Set name to use_case elements
@@ -104,12 +104,17 @@ for assoc in associations:
 
 
 # Connect association with elements
-def gen_el_json(el):
+def gen_json(el):
     return {
         'id': el.id,
         'type': 'association' if el.label == 'line' else el.label,
         'name': el.text
     }
+
+
+def get_or_create_element(diagram, el):
+    items = list(filter(lambda x: x['id'] == el.id, diagram['elements']))
+    return items[0] if len(items) > 0 else gen_json(el)
 
 
 diagram = {
@@ -123,14 +128,11 @@ target_elements = list(
     filter(lambda x: x.label == 'use_case' or x.label == 'actor', boxes))
 
 for assoc in associations:
-    start_kp = assoc.key_points.start
-    end_kp = assoc.key_points.end
+    start_kp_el = get_closest_box_to_point(assoc.key_points.start, target_elements)
+    end_kp_el = get_closest_box_to_point(assoc.key_points.end, target_elements)
 
-    start_kp_el = get_closest_box_to_point(start_kp, target_elements)
-    end_kp_el = get_closest_box_to_point(end_kp, target_elements)
-
-    start_kp_el_json = gen_el_json(start_kp_el)
-    end_kp_el_json = gen_el_json(end_kp_el)
+    start_kp_el_json = get_or_create_element(diagram, start_kp_el)
+    end_kp_el_json = get_or_create_element(diagram, end_kp_el)
 
     if assoc.label == 'dotted_line' and "include" in assoc.text:
         start_kp_el_json['include'] = {
@@ -138,17 +140,32 @@ for assoc in associations:
             'ref': end_kp_el.id
         }
     elif assoc.label == 'dotted_line' and "extend" in assoc.text:
-        extensions = list(filter(lambda x: "extend" not in x and x.startswith("("), assoc.text.split("<-->")))
+        extensions = list(filter(lambda x: "extend" not in x, assoc.text.split("<-->")))
         extension = extensions[0] if len(extensions) >= 1 else "Default_extension"
+
+        extend_id = uuid.uuid4().hex
+        extension_id = uuid.uuid4().hex
+        start_kp_el_json['extend_from'] = {
+            "type": 'extension_point',
+            "extend_id": extend_id,
+            "extension_id": extension_id,
+            "name": extension
+        }
+
+        end_kp_el_json['extend_to'] = {
+            "type": "extend",
+            "ref": start_kp_el.id,
+            "extend_id": extend_id,
+            "extension_id": extension_id
+        }
 
     elif assoc.label == 'generalization':
         end_kp_el_json['generalization'] = {
             "type": "generalization",
             "ref": start_kp_el.id
         }
-        diagram['elements'] = [el if el['id'] is not end_kp_el.id else end_kp_el_json for el in diagram['elements']]
     else:
-        assoc_el_json = gen_el_json(assoc)
+        assoc_el_json = gen_json(assoc)
         assoc_el_json['start'] = start_kp_el.id
         assoc_el_json['end'] = end_kp_el.id
         diagram['elements'].append(assoc_el_json)
@@ -159,6 +176,9 @@ for assoc in associations:
 
     if end_kp_el.id not in existing_ids:
         diagram['elements'].append(end_kp_el_json)
+
+    diagram['elements'] = [el if el['id'] is not start_kp_el.id else start_kp_el_json for el in diagram['elements']]
+    diagram['elements'] = [el if el['id'] is not end_kp_el.id else end_kp_el_json for el in diagram['elements']]
 
 diagram_json = json.dumps(diagram)
 print("Diagram json", diagram_json)
