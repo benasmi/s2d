@@ -160,20 +160,20 @@ for assoc in associations:
 
         extend_id = uuid.uuid4().hex
         extension_id = uuid.uuid4().hex
-        start_kp_el_json['extend_from'] = {
-            "type": 'extension_point',
+
+        start_kp_el_json['extend_to'] = {
+            "type": 'extend',
+            "ref": end_kp_el.id,
+            "extend_id": extend_id,
+            "extension_id": extension_id,
+        }
+
+        end_kp_el_json['extend_from'] = {
+            "type": "extension_point",
             "extend_id": extend_id,
             "extension_id": extension_id,
             "name": extension
         }
-
-        end_kp_el_json['extend_to'] = {
-            "type": "extend",
-            "ref": start_kp_el.id,
-            "extend_id": extend_id,
-            "extension_id": extension_id
-        }
-
     elif assoc.label == 'generalization':
         end_kp_el_json['generalization'] = {
             "type": "generalization",
