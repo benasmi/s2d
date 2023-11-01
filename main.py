@@ -30,7 +30,7 @@ def get_closest_box_to_point(point, boxes):
             min_distance = euc_distance
             closest_b = b
 
-    return closest_b
+    return closest_b, min_distance
 
 
 # Read image
@@ -73,20 +73,35 @@ for b in boxes:
 use_case_boxes = list(filter(lambda x: x.label == 'use_case', boxes))
 
 for uc_b in use_case_boxes:
-    t_b = get_closest_box_to_point(
+    t_b, t_b_distance = get_closest_box_to_point(
         uc_b.coordinates[4],
-        list(filter(lambda x: x.label == 'text' and not x.used and not "extension points" in x.text, boxes))
+        list(filter(lambda x: x.label == 'text' and not x.used, boxes))
     )
 
     t_b.used = True
     uc_b.text = t_b.text
 
-# ---> Set dotted_line type and extension + actor names
-text_boxes = list(filter(lambda x: x.label == 'text' and x.used == False, boxes))
-non_text_boxes = list(filter(lambda x: (x.label == 'dotted_line' or x.label == 'actor') and x.text is None, boxes))
+# ---> Set actor names
+actor_boxes = list(filter(lambda x: (x.label == 'actor') and x.text is None, boxes))
+
+for act_b in actor_boxes:
+    t_b, t_b_distance = get_closest_box_to_point(
+        act_b.coordinates[4],
+        list(filter(lambda x: x.label == 'text' and not x.used, boxes))
+    )
+
+    if t_b_distance > 80:
+        continue
+
+    t_b.used = True
+    act_b.text = t_b.text
+
+# ---> Set dotted line names
+text_boxes = list(filter(lambda x: x.label == 'text' and not x.used, boxes))
+dotted_line_boxes = list(filter(lambda x: x.label == 'dotted_line', boxes))
 
 for t_b in text_boxes:
-    nt_b = get_closest_box_to_point(t_b.coordinates[4], non_text_boxes)
+    nt_b, nt_b_distance = get_closest_box_to_point(t_b.coordinates[4], dotted_line_boxes)
 
     t_b.used = True
     if nt_b.text is None:
@@ -128,8 +143,8 @@ target_elements = list(
     filter(lambda x: x.label == 'use_case' or x.label == 'actor', boxes))
 
 for assoc in associations:
-    start_kp_el = get_closest_box_to_point(assoc.key_points.start, target_elements)
-    end_kp_el = get_closest_box_to_point(assoc.key_points.end, target_elements)
+    start_kp_el, start_dist = get_closest_box_to_point(assoc.key_points.start, target_elements)
+    end_kp_el, end_dist = get_closest_box_to_point(assoc.key_points.end, target_elements)
 
     start_kp_el_json = get_or_create_element(diagram, start_kp_el)
     end_kp_el_json = get_or_create_element(diagram, end_kp_el)
@@ -140,7 +155,7 @@ for assoc in associations:
             'ref': end_kp_el.id
         }
     elif assoc.label == 'dotted_line' and "extend" in assoc.text:
-        extensions = list(filter(lambda x: "extend" not in x, assoc.text.split("<-->")))
+        extensions = list(filter(lambda x: "extend" not in x, assoc.text.split("<--->")))
         extension = extensions[0] if len(extensions) >= 1 else "Default_extension"
 
         extend_id = uuid.uuid4().hex
