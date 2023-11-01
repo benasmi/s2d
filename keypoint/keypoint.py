@@ -52,8 +52,8 @@ def calculate_box_key_points(image, box):
     # line from bottom left to top right
     if bl_tr_aggregate < br_tl_aggregate:
         type = "bottom_left_top_right"
-        bl_kp = (box.xmin, box.ymin)
-        tr_kp = (box.xmax, box.ymax)
+        bl_kp = (box.xmin, box.ymax)
+        tr_kp = (box.xmax, box.ymin)
         if not determine_start_end(box):
             return KeyPoints(bl_kp, tr_kp, type)
         else:
