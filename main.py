@@ -13,23 +13,14 @@ from ocr import ocr
 debug = True
 
 
-def crop_image(box, image):
-    lt_coords = box.coordinates[0]
-    br_coords = box.coordinates[3]
-
-    return image.crop((lt_coords[0], lt_coords[1], br_coords[0], br_coords[1]))
-
-
 def get_closest_box_to_point(point, boxes):
-    closest_b = None
-    min_distance = float('inf')
+    if not boxes:
+        return None, float('inf')
 
-    for b in boxes:
-        euc_distance = distance.euclidean(point, b.coordinates[4])
-        if euc_distance < min_distance:
-            min_distance = euc_distance
-            closest_b = b
-
+    closest_b, min_distance = min(
+        ((b, distance.euclidean(point, b.center)) for b in boxes),
+        key=lambda x: x[1]
+    )
     return closest_b, min_distance
 
 
@@ -48,20 +39,20 @@ img_for_plot, detections, category_index = inference.inference(image, min_thresh
 inference.plot_inference(img_for_plot, detections)
 
 # Map to box items
-boxes = []
-for i in range(len(detections['detection_scores'])):
-    box = BoundingBox(
-        image,
-        detections['detection_boxes'][i],
-        category_index[detections['detection_classes'][i]]['name'],
-        detections['detection_scores'][i]
+
+boxes = [
+    BoundingBox(image, b, category_index[detection_class]['name'], score)
+    for b, detection_class, score in zip(
+        detections['detection_boxes'],
+        detections['detection_classes'],
+        detections['detection_scores']
     )
-    boxes.append(box)
+]
 
 # Digitize text for 'text' boxes
 for b in boxes:
     if b.label == 'text':
-        img_res = crop_image(b, image)
+        img_res = b.crop(image)
         b.text = ocr.image_to_string(img_res)
 
         if "extension points\n" in b.text:
@@ -74,7 +65,7 @@ use_case_boxes = list(filter(lambda x: x.label == 'use_case', boxes))
 
 for uc_b in use_case_boxes:
     t_b, t_b_distance = get_closest_box_to_point(
-        uc_b.coordinates[4],
+        uc_b.center,
         list(filter(lambda x: x.label == 'text' and not x.used, boxes))
     )
 
@@ -86,7 +77,7 @@ actor_boxes = list(filter(lambda x: (x.label == 'actor') and x.text is None, box
 
 for act_b in actor_boxes:
     t_b, t_b_distance = get_closest_box_to_point(
-        act_b.coordinates[4],
+        act_b.center,
         list(filter(lambda x: x.label == 'text' and not x.used, boxes))
     )
 
@@ -101,7 +92,7 @@ text_boxes = list(filter(lambda x: x.label == 'text' and not x.used, boxes))
 dotted_line_boxes = list(filter(lambda x: x.label == 'dotted_line', boxes))
 
 for t_b in text_boxes:
-    nt_b, nt_b_distance = get_closest_box_to_point(t_b.coordinates[4], dotted_line_boxes)
+    nt_b, nt_b_distance = get_closest_box_to_point(t_b.center, dotted_line_boxes)
 
     t_b.used = True
     if nt_b.text is None:
@@ -114,7 +105,7 @@ associations = list(
     filter(lambda x: x.label == 'generalization' or x.label == 'dotted_line' or x.label == 'line', boxes))
 
 for assoc in associations:
-    assoc_image = crop_image(assoc, image)
+    assoc_image = assoc.crop(image)
     assoc.key_points = keypoint.calculate_key_points(assoc_image, assoc)
 
 
