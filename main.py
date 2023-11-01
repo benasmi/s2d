@@ -4,7 +4,8 @@ import uuid
 import matplotlib.pyplot as plt
 from PIL import Image
 from scipy.spatial import distance
-from box import BoundingBox
+
+import box
 from detection import inference
 from keypoint import keypoint
 from xmi import diagram_to_xmi
@@ -12,16 +13,19 @@ from ocr import ocr
 
 debug = True
 
-
-def get_closest_box_to_point(point, boxes):
+def get_closest_box(point, boxes, max_distance=None):
     if not boxes:
-        return None, float('inf')
+        return None
 
     closest_b, min_distance = min(
         ((b, distance.euclidean(point, b.center)) for b in boxes),
         key=lambda x: x[1]
     )
-    return closest_b, min_distance
+
+    if max_distance is not None and min_distance > max_distance:
+        return None
+
+    return closest_b
 
 
 # Read image
@@ -39,74 +43,47 @@ img_for_plot, detections, category_index = inference.inference(image, min_thresh
 inference.plot_inference(img_for_plot, detections)
 
 # Map to box items
-
-boxes = [
-    BoundingBox(image, b, category_index[detection_class]['name'], score)
-    for b, detection_class, score in zip(
-        detections['detection_boxes'],
-        detections['detection_classes'],
-        detections['detection_scores']
-    )
-]
+boxes = box.BoundingBoxes(image, detections, category_index)
 
 # Digitize text for 'text' boxes
-for b in boxes:
-    if b.label == 'text':
-        img_res = b.crop(image)
-        b.text = ocr.image_to_string(img_res)
+for b in boxes.filter_by('text'):
+    img_res = b.crop(image)
+    b.text = ocr.image_to_string(img_res)
+    b.used = "extension points\n" in b.text
 
-        if "extension points\n" in b.text:
-            b.used = True
 
 # Attach text to elements
 
 # ---> Set name to use_case elements
-use_case_boxes = list(filter(lambda x: x.label == 'use_case', boxes))
+for uc_b in boxes.filter_by('use_case'):
+    t_b = get_closest_box(uc_b.center, boxes.filter_by('text', used=False), max_distance=50)
 
-for uc_b in use_case_boxes:
-    t_b, t_b_distance = get_closest_box_to_point(
-        uc_b.center,
-        list(filter(lambda x: x.label == 'text' and not x.used, boxes))
-    )
+    if t_b is not None:
+        t_b.used = True
+        uc_b.text = t_b.text
 
-    t_b.used = True
-    uc_b.text = t_b.text
 
 # ---> Set actor names
-actor_boxes = list(filter(lambda x: (x.label == 'actor') and x.text is None, boxes))
+for act_b in boxes.filter_by('actor'):
+    t_b = get_closest_box(act_b.center, boxes.filter_by('text', used=False), max_distance=80)
 
-for act_b in actor_boxes:
-    t_b, t_b_distance = get_closest_box_to_point(
-        act_b.center,
-        list(filter(lambda x: x.label == 'text' and not x.used, boxes))
-    )
+    if t_b is not None:
+        t_b.used = True
+        act_b.text = t_b.text
 
-    if t_b_distance > 80:
+# ---> Set dotted line names
+for t_b in boxes.filter_by('text', used=False):
+    nt_b = get_closest_box(t_b.center, boxes.filter_by('dotted_line'), max_distance=70)
+
+    if nt_b is None:
         continue
 
     t_b.used = True
-    act_b.text = t_b.text
-
-# ---> Set dotted line names
-text_boxes = list(filter(lambda x: x.label == 'text' and not x.used, boxes))
-dotted_line_boxes = list(filter(lambda x: x.label == 'dotted_line', boxes))
-
-for t_b in text_boxes:
-    nt_b, nt_b_distance = get_closest_box_to_point(t_b.center, dotted_line_boxes)
-
-    t_b.used = True
-    if nt_b.text is None:
-        nt_b.text = t_b.text
-    else:
-        nt_b.text = nt_b.text + "<--->" + t_b.text
+    nt_b.text = nt_b.text + "<--->" + t_b.text if nt_b.text is not None else t_b.text
 
 # Calculate key points
-associations = list(
-    filter(lambda x: x.label == 'generalization' or x.label == 'dotted_line' or x.label == 'line', boxes))
-
-for assoc in associations:
-    assoc_image = assoc.crop(image)
-    assoc.key_points = keypoint.calculate_key_points(assoc_image, assoc)
+for assoc in boxes.filter_by('generalization', 'dotted_line', 'line'):
+    assoc.key_points = keypoint.calculate_key_points(assoc.crop(image), assoc)
 
 
 # Connect association with elements
@@ -128,14 +105,12 @@ diagram = {
     "elements": []
 }
 
-associations = list(
-    filter(lambda x: x.label == 'generalization' or x.label == 'dotted_line' or x.label == 'line', boxes))
-target_elements = list(
-    filter(lambda x: x.label == 'use_case' or x.label == 'actor', boxes))
+associations = boxes.filter_by('generalization', 'dotted_line', 'line')
+target_elements = boxes.filter_by('use_case', 'actor')
 
 for assoc in associations:
-    start_kp_el, start_dist = get_closest_box_to_point(assoc.key_points.start, target_elements)
-    end_kp_el, end_dist = get_closest_box_to_point(assoc.key_points.end, target_elements)
+    start_kp_el = get_closest_box(assoc.key_points.start, target_elements)
+    end_kp_el = get_closest_box(assoc.key_points.end, target_elements)
 
     start_kp_el_json = get_or_create_element(diagram, start_kp_el)
     end_kp_el_json = get_or_create_element(diagram, end_kp_el)

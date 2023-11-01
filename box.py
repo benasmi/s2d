@@ -35,3 +35,21 @@ class BoundingBox:
 
     def crop(self, image):
         return image.crop((*self.left_top, *self.right_bottom))
+
+
+class BoundingBoxes:
+    def __init__(self, image, detections, category_index):
+        self.boxes = [
+            BoundingBox(image, b, category_index[detection_class]['name'], score)
+            for b, detection_class, score in zip(
+                detections['detection_boxes'],
+                detections['detection_classes'],
+                detections['detection_scores']
+            )
+        ]
+
+    def filter_by(self, *labels, used=None, custom_filter=None):
+        filter_func = lambda x: x.label in labels \
+                                and (x.used is used if used is not None else True) \
+                                and (custom_filter(x) if custom_filter else True)
+        return list(filter(filter_func, self.boxes))
