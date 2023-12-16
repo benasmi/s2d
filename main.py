@@ -30,7 +30,7 @@ def get_closest_box(point, boxes, max_distance=None):
 
 # Read image
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
-rel_path = "detection\data\images\PA24.png"
+rel_path = os.path.join("detection", "data", "images", "PA24.png")
 abs_file_path = os.path.join(script_dir, rel_path)
 image = Image.open(abs_file_path)
 image = image.convert("RGB")
