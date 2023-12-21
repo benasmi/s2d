@@ -53,7 +53,7 @@ def digitize(path):
     img_for_plot, detections, category_index = inference.inference(image, min_thresh=.5)
 
     # Plot inference
-    inference.plot_inference(img_for_plot, detections, category_index)
+    img_np_array = inference.plot_inference(img_for_plot, detections, category_index)
 
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
@@ -169,4 +169,4 @@ def digitize(path):
     #    print("Xmi", xmi)
     #    plt.show()
 
-    return xmi
+    return xmi, img_np_array

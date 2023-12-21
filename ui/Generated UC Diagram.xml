@@ -1,8 +1,0 @@
-<xmi:XMI xmlns:uml="http://www.omg.org/spec/UML/20110701" xmlns:xmi="http://www.omg.org/spec/UML/20110701">
-	<uml:Package xmi:id="467c457328c946c4986c6323247aa1ed" xmi:label="Generated UC Diagram" name="Generated UC Diagram">
-		<packagedElement xmi:type="uml:UseCase" xmi:id="5733d7aa78ec44edb13d3985f77657bf" name="Withdraw">
-			<include xmi:type="uml:Include" xmi:id="3d9d40e91d8741b08169e770fb3c6c3c" visibility="public" addition="bb8c3e6464ad43d6a74c09fd0b1c2ca7" />
-		</packagedElement>
-		<packagedElement xmi:type="uml:UseCase" xmi:id="bb8c3e6464ad43d6a74c09fd0b1c2ca7" name="Card&#10;Identification" />
-	</uml:Package>
-</xmi:XMI>

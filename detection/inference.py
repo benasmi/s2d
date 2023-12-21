@@ -78,3 +78,4 @@ def plot_inference(img_numpy, detections, category_index):
     print('Done')
     print('Plotting')
     plt.show(block=False)
+    return img_numpy
