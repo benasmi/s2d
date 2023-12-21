@@ -97,7 +97,22 @@ class App(ct.CTk):
         self.diagram_path.grid(row=0, column=0, padx=15)
         self.diagram_path.configure(text=filename)
 
+        max_width = 500
         diagram_img = PhotoImage(file=filename)
+
+        original_width = diagram_img.width()
+        original_height = diagram_img.height()
+
+        # Calculate the aspect ratio
+        aspect_ratio = original_width / original_height
+
+        # Calculate the new height based on the maximum width
+        new_width = min(original_width, max_width)
+        new_height = int(new_width / aspect_ratio)
+
+        # Resize the image using subsample
+        diagram_img = diagram_img.subsample(original_width // new_width, original_height // new_height)
+
         self.diagram_preview.configure(image=diagram_img)
         self.diagram_preview.grid(row=0, column=0, padx=15, pady=15)
 
