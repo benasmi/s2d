@@ -4,7 +4,14 @@ from PIL import Image, ImageTk
 from tkinter import filedialog as fd
 from digitize import digitize
 from xml.dom import minidom
+import os
 
+class History:
+    def __init__(self, name, preview_img, inferenced_img, xmi):
+        self.name = name
+        self.preview_img = preview_img
+        self.inferenced_img = inferenced_img
+        self.xmi = xmi
 
 class HistoryFrame(ct.CTkScrollableFrame):
     def __init__(self, master, command=None, **kwargs):
@@ -15,7 +22,8 @@ class HistoryFrame(ct.CTkScrollableFrame):
         self.button_list = []
 
     def add_item(self, item):
-        button = ct.CTkButton(self, text=item, height=24, width=240)
+        print("Item", item)
+        button = ct.CTkButton(self, text=item.name, height=24, width=240)
         if self.command is not None:
             button.configure(command=lambda: self.command(item))
         button.grid(row=len(self.button_list), column=0, pady=(0, 10), padx=5, )
@@ -33,6 +41,13 @@ class App(ct.CTk):
     def __init__(self):
         super().__init__()
 
+        self.history = []
+
+        self.preview_img = None
+        self.inferenced_img = None
+        self.name = None
+        self.xmi = None
+
         self.grid_rowconfigure(0, weight=1)
         self.columnconfigure(2, weight=1)
 
@@ -46,7 +61,7 @@ class App(ct.CTk):
         app_label = ct.CTkLabel(self.left_rail, text="History", height=30, font=("Verdana", 25))
         app_label.grid(row=0, column=1, padx=15, pady=15)
 
-        self.digitized_diagrams = HistoryFrame(master=self.left_rail, width=300,
+        self.diagrams_history = HistoryFrame(master=self.left_rail, width=300,
                                                command=self.view_history,
                                                fg_color="transparent",
                                                corner_radius=0)
@@ -116,8 +131,23 @@ class App(ct.CTk):
         self.diagram_inference_frame.grid_forget()
         self.diagram_xmi_frame.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
 
-    def view_history(self, item):
-        print(f"label button frame clicked: {item}")
+    def view_history(self, history):
+        self.right_rail_actions.grid(row=0, column=1, padx=4, pady=4)
+
+        self.diagram_preview_label.configure(image=history.preview_img)
+        self.diagram_inference_label.configure(image=history.inferenced_img)
+
+        self.diagram_path.grid(row=0, column=0, padx=15, pady=0)
+        self.diagram_path.configure(text=history.name)
+
+        self.diagram_xmi_preview.configure(state=ct.NORMAL)
+        self.diagram_xmi_preview.delete("1.0", ct.END)
+        self.diagram_xmi_preview.insert(ct.END, history.xmi)
+        self.diagram_xmi_preview.configure(state=ct.DISABLED)
+
+        self.show_preview_frame()
+
+        print(f"label button frame clicked: {history}")
 
     def upload_image(self):
         filename = fd.askopenfilename()
@@ -125,9 +155,13 @@ class App(ct.CTk):
         if not bool(filename.strip()):
             return
 
+        self.right_rail_actions.grid_forget()
+
         self.diagram_path.grid(row=0, column=0, padx=15)
         self.convert_button.grid(row=0, column=1, padx=15)
         self.diagram_path.configure(text=filename)
+
+        self.name = os.path.basename(filename)
 
         max_width = 500
         diagram_img = PhotoImage(file=filename)
@@ -144,8 +178,8 @@ class App(ct.CTk):
 
         # Resize the image using subsample
         diagram_img = diagram_img.subsample(original_width // new_width, original_height // new_height)
+        self.preview_img = diagram_img
 
-        # self.right_rail_actions.grid(row=0, column=0, padx=15, pady=15)
         self.diagram_preview_label.configure(image=diagram_img)
         self.show_preview_frame()
 
@@ -158,11 +192,13 @@ class App(ct.CTk):
         xmi, img_np_array = digitize(path)
 
         self.diagram_path.grid(row=0, column=0, padx=15, pady=0)
-        self.diagram_path.configure(text="Success!")
+        self.diagram_path.configure(text=self.name)
         self.right_rail_actions.grid(row=0, column=1, padx=4, pady=4)
 
         dom = minidom.parseString(xmi)
         formatted_xml = dom.toprettyxml(indent="  ", newl='')
+        self.xmi = formatted_xml
+
         self.diagram_xmi_preview.configure(state=ct.NORMAL)
         self.diagram_xmi_preview.delete("1.0", ct.END)
         self.diagram_xmi_preview.insert(ct.END, formatted_xml)
@@ -175,7 +211,14 @@ class App(ct.CTk):
         resized_image = inference_img.resize((width, new_height), Image.Resampling.LANCZOS)
         inference_img = ImageTk.PhotoImage(resized_image)
 
+        self.inferenced_img = inference_img
         self.diagram_inference_label.configure(image=inference_img)
+
+        history = History(self.name, self.preview_img, self.inferenced_img, xmi)
+
+        self.no_history_label.grid_forget()
+        self.diagrams_history.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
+        self.diagrams_history.add_item(history)
 
 
 if __name__ == "__main__":
