@@ -10,31 +10,31 @@ from object_detection.utils import visualization_utils as viz_utils
 
 import matplotlib
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress TensorFlow logging (1)
+
+tf.get_logger().setLevel('ERROR')  # Suppress TensorFlow logging (2)
+
+# Enable GPU dynamic memory allocation
+gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
+
+matplotlib.use('TkAgg')
+
+print('Loading model...', end='')
+start_time = time.time()
+
+# Load saved model and build the detection function
+absolute_path = os.path.dirname(__file__)
+
+model_path = os.path.join(absolute_path, "model", "saved_model")
+detect_fn = tf.saved_model.load(model_path)
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+print('Done! Took {} seconds'.format(elapsed_time))
+
 def inference(image, min_thresh):
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress TensorFlow logging (1)
-
-    tf.get_logger().setLevel('ERROR')  # Suppress TensorFlow logging (2)
-
-    # Enable GPU dynamic memory allocation
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    for gpu in gpus:
-        tf.config.experimental.set_memory_growth(gpu, True)
-
-    matplotlib.use('TkAgg')
-
-    print('Loading model...', end='')
-    start_time = time.time()
-
-    # Load saved model and build the detection function
-    absolute_path = os.path.dirname(__file__)
-
-    model_path = os.path.join(absolute_path, "model", "saved_model")
-    detect_fn = tf.saved_model.load(model_path)
-
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print('Done! Took {} seconds'.format(elapsed_time))
-
     label_path = os.path.join(absolute_path, os.path.join("model", "label_map.pbtxt"))
     warnings.filterwarnings('ignore')  # Suppress Matplotlib warnings
     category_index = label_map_util.create_category_index_from_labelmap(label_path, use_display_name=True)
