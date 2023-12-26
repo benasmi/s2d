@@ -86,14 +86,17 @@ class App(ct.CTk):
         self.convert_button = ct.CTkButton(master=self.right_rail_top, text="Convert", command=self.convert_diagram)
 
         self.right_rail_actions = ct.CTkFrame(master=self.right_rail_top, fg_color="transparent")
-        self.diagram_preview_btn = ct.CTkButton(master=self.right_rail_actions, text="Preview",
+        self.diagram_preview_btn = ct.CTkButton(master=self.right_rail_actions, text="Show preview",
                                                 command=self.show_preview_frame)
         self.diagram_preview_btn.grid(row=0, column=1, padx=4, pady=4)
         self.diagram_inference_btn = ct.CTkButton(master=self.right_rail_actions, text="Show inference",
                                                   command=self.show_inference_frame)
         self.diagram_inference_btn.grid(row=0, column=2, padx=4, pady=4)
-        self.diagram_xmi_btn = ct.CTkButton(master=self.right_rail_actions, text="XMI", command=self.show_xmi_frame)
+        self.diagram_xmi_btn = ct.CTkButton(master=self.right_rail_actions, text="View XMI", command=self.show_xmi_frame)
         self.diagram_xmi_btn.grid(row=0, column=3, padx=4, pady=4)
+
+        self.download_btn = ct.CTkButton(master=self.right_rail_actions, text="Save XMI", command=self.save_xmi)
+        self.download_btn.grid(row=0, column=4, padx=4, pady=4)
 
         # Right rail bottom
         self.right_rail_bottom = ct.CTkFrame(master=self.right_rail)
@@ -220,6 +223,11 @@ class App(ct.CTk):
         self.diagrams_history.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
         self.diagrams_history.add_item(history)
 
+    def save_xmi(self):
+        file_path = fd.asksaveasfilename(defaultextension=".xmi", filetypes=[("XMI files", "*.xmi")])
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(self.xmi)
 
 if __name__ == "__main__":
     ct.set_appearance_mode("dark")
