@@ -1,7 +1,6 @@
 import os
 import json
 import uuid
-import matplotlib.pyplot as plt
 from PIL import Image
 from scipy.spatial import distance
 
