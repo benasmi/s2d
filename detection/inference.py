@@ -34,12 +34,11 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 print('Done! Took {} seconds'.format(elapsed_time))
 
-label_path = os.path.join(absolute_path, os.path.join("model", "label_map.pbtxt"))
-warnings.filterwarnings('ignore')  # Suppress Matplotlib warnings
-category_index = label_map_util.create_category_index_from_labelmap(label_path, use_display_name=True)
-
-
 def inference(image, min_thresh):
+    label_path = os.path.join(absolute_path, os.path.join("model", "label_map.pbtxt"))
+    warnings.filterwarnings('ignore')  # Suppress Matplotlib warnings
+    category_index = label_map_util.create_category_index_from_labelmap(label_path, use_display_name=True)
+
     image_np = np.array(image)
 
     input_tensor = tf.convert_to_tensor(image_np)
@@ -63,7 +62,7 @@ def inference(image, min_thresh):
     return image_np.copy(), detections, category_index
 
 
-def plot_inference(img_numpy, detections):
+def plot_inference(img_numpy, detections, category_index):
     viz_utils.visualize_boxes_and_labels_on_image_array(
         img_numpy,
         detections['detection_boxes'],
@@ -79,3 +78,4 @@ def plot_inference(img_numpy, detections):
     print('Done')
     print('Plotting')
     plt.show(block=False)
+    return img_numpy
