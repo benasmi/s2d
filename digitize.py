@@ -1,5 +1,4 @@
 import os
-import json
 import uuid
 from PIL import Image
 from scipy.spatial import distance
@@ -29,7 +28,7 @@ def get_closest_box(point, boxes, max_distance=None):
 def gen_json(el):
     return {
         'id': el.id,
-        'type': 'association' if el.label == 'line' else el.label,
+        'type': el.label,
         'name': el.text
     }
 
@@ -42,13 +41,11 @@ def get_or_create_element(diagram, el):
 def digitize(path):
     # Read image
     script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
-    # rel_path = os.path.join("detection", "data", "images", "PA24.png")
     abs_file_path = os.path.join(script_dir, path)
     image = Image.open(abs_file_path)
     image = image.convert("RGB")
 
     # Do inference
-    print('Running inference for {}... '.format(abs_file_path), end='')
     img_for_plot, detections, category_index = inference.inference(image, min_thresh=.5)
 
     # Plot inference
@@ -64,7 +61,6 @@ def digitize(path):
         b.used = "extension points\n" in b.text
 
     # Attach text to elements
-
     # ---> Set name to use_case elements
     for uc_b in boxes.filter_by('use_case'):
         t_b = get_closest_box(uc_b.center, boxes.filter_by('text', used=False), max_distance=50)
@@ -83,7 +79,7 @@ def digitize(path):
 
     # ---> Set dotted line names
     for t_b in boxes.filter_by('text', used=False):
-        nt_b = get_closest_box(t_b.center, boxes.filter_by('dotted_line'), max_distance=70)
+        nt_b = get_closest_box(t_b.center, boxes.filter_by('association'), max_distance=70)
 
         if nt_b is None:
             continue
@@ -92,17 +88,16 @@ def digitize(path):
         nt_b.text = nt_b.text + "<--->" + t_b.text if nt_b.text is not None else t_b.text
 
     # Calculate key points
-    for assoc in boxes.filter_by('generalization', 'dotted_line', 'line'):
+    for assoc in boxes.filter_by('association'):
         assoc.key_points = keypoint.calculate_key_points(assoc.crop(image), assoc)
 
     # Connect association with elements
-
     diagram = {
         "name": "Generated UC Diagram",
         "elements": []
     }
 
-    associations = boxes.filter_by('generalization', 'dotted_line', 'line')
+    associations = boxes.filter_by('association')
     target_elements = boxes.filter_by('use_case', 'actor')
 
     for assoc in associations:
@@ -158,14 +153,7 @@ def digitize(path):
         diagram['elements'] = [el if el['id'] is not start_kp_el.id else start_kp_el_json for el in diagram['elements']]
         diagram['elements'] = [el if el['id'] is not end_kp_el.id else end_kp_el_json for el in diagram['elements']]
 
-    diagram_json = json.dumps(diagram)
-    # print("Diagram json", diagram_json)
-
     # Convert to XMI
     xmi = diagram_to_xmi.convert_to_xmi(diagram)
-
-    # if debug:
-    #    print("Xmi", xmi)
-    #    plt.show()
 
     return xmi, img_np_array

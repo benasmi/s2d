@@ -4,6 +4,7 @@
 ## 1. Start s2d object detection service
 
 ```commandline
+cd tfserve
 docker build -t s2d-detection .
 docker run -p 8501:8501 s2d-detection
 ```
