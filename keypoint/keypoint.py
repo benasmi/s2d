@@ -5,7 +5,7 @@ from box import KeyPoints
 extend_kp_px = 40
 mid_point_kp_thresh = 40
 bin_thresh = 180
-debug = False
+debug = True
 
 
 def calculate_key_points(image, box):

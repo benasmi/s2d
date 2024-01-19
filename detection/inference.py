@@ -15,7 +15,7 @@ def inference(image, threshold):
     detections = detect_fn(image_np)
     thresh_detections = threshold_detections(detections, threshold)
 
-    return image_np.copy(), thresh_detections, label_map
+    return thresh_detections, label_map
 
 
 def detect_fn(img):
