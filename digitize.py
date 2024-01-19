@@ -59,7 +59,7 @@ def digitize(path):
     boxes = box.BoundingBoxes(image, detections, category_index)
 
     # Plot inference
-    #visualise_boxes(image, boxes)
+    #visualise_boxes(image, boxes.boxes)
 
     # Digitize text for 'text' boxes
     for b in boxes.filter_by('text', 'use_case'):
@@ -104,7 +104,10 @@ def digitize(path):
     for assoc in boxes.filter_by('association', 'dotted_line'):
         assoc.key_points = keypoint.calculate_key_points(assoc.crop(image), assoc)
 
-    visualise_boxes(image, boxes)
+        if debug:
+            visualise_boxes(image, [assoc])
+
+    visualise_boxes(image, boxes.boxes)
 
     # Connect association with elements
     diagram = {
@@ -185,7 +188,7 @@ def visualise_boxes(image, boxes):
         'use_case': '#3498db',
         'actor': '#2c3e50'
     }
-    for b in boxes.boxes:
+    for b in boxes:
         c = class_color[b.label]
         x, y = b.left_top
 
