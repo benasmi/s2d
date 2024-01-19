@@ -29,8 +29,10 @@ def apply_threshold(img):
     return img
 
 
-def get_true_pixel_values(image):
-    return sum(np.array(apply_threshold(image)).flatten())
+def pixels(image):
+    thresh_image = apply_threshold(image)
+    np_image = np.array(thresh_image).flatten()
+    return np.count_nonzero(np_image == False)
 
 
 def determine_start_end(box):
@@ -40,26 +42,26 @@ def determine_start_end(box):
 def calculate_box_key_points(image, box):
     width, height = image.size
     crop_size = 20
-    bottom_left_box = get_true_pixel_values(image.crop((0, height - crop_size, crop_size, height)))
-    top_right_box = get_true_pixel_values(image.crop((width - crop_size, 0, width, crop_size)))
+    bottom_left_box = pixels(image.crop((0, height - crop_size, crop_size, height)))
+    top_right_box = pixels(image.crop((width - crop_size, 0, width, crop_size)))
     bl_tr_aggregate = bottom_left_box + top_right_box
 
-    bottom_right_box = get_true_pixel_values(image.crop((width - crop_size, height - crop_size, width, height)))
-    top_left_box = get_true_pixel_values(image.crop((0, 0, crop_size, crop_size)))
+    bottom_right_box = pixels(image.crop((width - crop_size, height - crop_size, width, height)))
+    top_left_box = pixels(image.crop((0, 0, crop_size, crop_size)))
     br_tl_aggregate = bottom_right_box + top_left_box
 
     # line from bottom left to top right
-    if bl_tr_aggregate < br_tl_aggregate:
+    if bl_tr_aggregate > br_tl_aggregate:
         type = "bottom_left_top_right"
         bl_kp = (box.xmin, box.ymax)
         tr_kp = (box.xmax, box.ymin)
         if not determine_start_end(box):
             return KeyPoints(bl_kp, tr_kp, type)
         else:
-            if bottom_left_box < top_right_box:
-                return KeyPoints(bl_kp, tr_kp, type)
-            else:
+            if bottom_left_box > top_right_box:
                 return KeyPoints(tr_kp, bl_kp, type)
+            else:
+                return KeyPoints(bl_kp, tr_kp, type)
     else:  # line from top left to bottom left
         type = "top_left_bottom_right"
         br_kp = (box.xmax, box.ymax)
@@ -67,10 +69,10 @@ def calculate_box_key_points(image, box):
         if not determine_start_end(box):
             return KeyPoints(br_kp, tl_kp, type)
         else:
-            if top_left_box < bottom_right_box:
-                return KeyPoints(tl_kp, br_kp, type)
-            else:
+            if top_left_box > bottom_right_box:
                 return KeyPoints(br_kp, tl_kp, type)
+            else:
+                return KeyPoints(tl_kp, br_kp, type)
 
 
 def calculate_low_width_key_points(image, box):
@@ -107,7 +109,7 @@ def calculate_low_height_key_points(image, box):
     #    left_box.show()
     #    right_box.show()
 
-    if get_true_pixel_values(left_box) < get_true_pixel_values(right_box):
+    if pixels(left_box) > pixels(right_box):
         return KeyPoints(r_kp, l_kp, "low_height")
     else:
         return KeyPoints(l_kp, r_kp, "low_height")
