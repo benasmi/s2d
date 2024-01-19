@@ -5,10 +5,9 @@ from box import KeyPoints
 extend_kp_px = 40
 mid_point_kp_thresh = 40
 bin_thresh = 180
-debug = True
 
 
-def calculate_key_points(image, box):
+def calculate_key_points(image, box, debug=False):
     if debug:
         image.show()
 
@@ -104,9 +103,9 @@ def calculate_low_height_key_points(image, box):
     left_box = image.crop((0, 0, 40, height))
     right_box = image.crop((width - 40, 0, width, height))
 
-    if debug:
-        left_box.show()
-        right_box.show()
+    #if debug:
+    #    left_box.show()
+    #    right_box.show()
 
     if get_true_pixel_values(left_box) < get_true_pixel_values(right_box):
         return KeyPoints(r_kp, l_kp, "low_height")

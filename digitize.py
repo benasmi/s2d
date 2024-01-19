@@ -12,9 +12,13 @@ from keypoint import keypoint
 from xmi import diagram_to_xmi
 from ocr import ocr
 
-debug = True
-plt.rcParams['figure.figsize'] = [12.0, 8.0]  # Adjust the values as needed
+debug_options = {
+    'detection': False,
+    'key_points': True,
+    'post_kp': True,
+}
 
+plt.rcParams['figure.figsize'] = [12.0, 8.0]  # Adjust the values as needed
 
 def get_closest_box(point, boxes, max_distance=None):
     if not boxes:
@@ -59,7 +63,8 @@ def digitize(path):
     boxes = box.BoundingBoxes(image, detections, category_index)
 
     # Plot inference
-    #visualise_boxes(image, boxes.boxes)
+    if debug_options['detection']:
+        visualise_boxes(image, boxes.boxes)
 
     # Digitize text for 'text' boxes
     for b in boxes.filter_by('text', 'use_case'):
@@ -104,7 +109,7 @@ def digitize(path):
     for assoc in boxes.filter_by('association', 'dotted_line'):
         assoc.key_points = keypoint.calculate_key_points(assoc.crop(image), assoc)
 
-        if debug:
+        if debug_options['key_points']:
             visualise_boxes(image, [assoc])
 
     visualise_boxes(image, boxes.boxes)
