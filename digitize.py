@@ -13,7 +13,7 @@ from xmi import diagram_to_xmi
 from ocr import ocr
 
 debug_options = {
-    'detection': False,
+    'detection': True,
     'key_points': True,
     'post_kp': True,
 }
@@ -68,7 +68,8 @@ def digitize(path):
 
     # Digitize text for 'text' boxes
     for b in boxes.filter_by('text', 'use_case'):
-        pad = 4 if b.label == 'text' else None
+        pad = 3 if b.label == 'text' else None
+
         img_res = b.crop(image, padding=pad)
         b.text = ocr.image_to_string(img_res)
         if b.label == 'text':
@@ -89,7 +90,8 @@ def digitize(path):
 
         if t_b is not None:
             t_b.used = True
-            act_b.text = t_b.text
+            if t_b.text.strip():
+                act_b.text = t_b.text
 
     # ---> Set dotted line names
     for t_b in boxes.filter_by('text', used=False):
@@ -107,7 +109,7 @@ def digitize(path):
 
     # Calculate key points
     for assoc in boxes.filter_by('association', 'dotted_line'):
-        assoc.key_points = keypoint.calculate_key_points(assoc.crop(image), assoc)
+        assoc.key_points = keypoint.calculate_key_points(assoc.crop(image), assoc, debug=debug_options['key_points'])
 
         if debug_options['key_points']:
             visualise_boxes(image, [assoc])

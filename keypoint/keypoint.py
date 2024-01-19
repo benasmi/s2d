@@ -8,8 +8,8 @@ bin_thresh = 180
 
 
 def calculate_key_points(image, box, debug=False):
-    if debug:
-        image.show()
+    #if debug:
+    #    image.show()
 
     width, height = image.size
 
@@ -39,13 +39,13 @@ def determine_start_end(box):
 
 def calculate_box_key_points(image, box):
     width, height = image.size
-
-    bottom_left_box = get_true_pixel_values(image.crop((0, height - 40, 40, height)))
-    top_right_box = get_true_pixel_values(image.crop((width - 40, 0, width, 40)))
+    crop_size = 20
+    bottom_left_box = get_true_pixel_values(image.crop((0, height - crop_size, crop_size, height)))
+    top_right_box = get_true_pixel_values(image.crop((width - crop_size, 0, width, crop_size)))
     bl_tr_aggregate = bottom_left_box + top_right_box
 
-    bottom_right_box = get_true_pixel_values(image.crop((width - 40, height - 40, width, height)))
-    top_left_box = get_true_pixel_values(image.crop((0, 0, 40, 40)))
+    bottom_right_box = get_true_pixel_values(image.crop((width - crop_size, height - crop_size, width, height)))
+    top_left_box = get_true_pixel_values(image.crop((0, 0, crop_size, crop_size)))
     br_tl_aggregate = bottom_right_box + top_left_box
 
     # line from bottom left to top right
