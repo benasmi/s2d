@@ -1,6 +1,6 @@
 import os
 import uuid
-
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
@@ -13,6 +13,7 @@ from xmi import diagram_to_xmi
 from ocr import ocr
 
 debug = True
+plt.rcParams['figure.figsize'] = [12.0, 8.0]  # Adjust the values as needed
 
 
 def get_closest_box(point, boxes, max_distance=None):
@@ -49,15 +50,16 @@ def digitize(path):
     abs_file_path = os.path.join(script_dir, path)
     image = Image.open(abs_file_path)
     image = image.convert("RGB")
+    img_for_plot = np.array(image)
 
     # Do inference
-    img_for_plot, detections, category_index = inference.inference(image, min_thresh=.5)
+    detections, category_index = inference.inference(image, threshold=.5)
 
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
 
     # Plot inference
-    visualise_boxes(image, boxes)
+    #visualise_boxes(image, boxes)
 
     # Digitize text for 'text' boxes
     for b in boxes.filter_by('text', 'use_case'):

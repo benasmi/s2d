@@ -10,19 +10,12 @@ label_map = {
 }
 
 
-def inference(image, min_thresh):
+def inference(image, threshold):
     image_np = np.array(image)
     detections = detect_fn(image_np)
+    thresh_detections = threshold_detections(detections, threshold)
 
-    detections['detection_classes'] = np.array(detections["detection_classes"]).astype(np.int64)
-    indices = list(filter(lambda idx: detections['detection_scores'][idx] >= min_thresh,
-                          range(int(detections['num_detections']))))
-
-    for (key, value) in detections.items():
-        if key != 'num_detections':
-            detections[key] = np.take(detections[key], indices, 0)
-
-    return image_np.copy(), detections, label_map
+    return image_np.copy(), thresh_detections, label_map
 
 
 def detect_fn(img):
@@ -36,3 +29,14 @@ def detect_fn(img):
 
     result = json.loads(response.text)
     return result['predictions'][0]
+
+
+def threshold_detections(detections, threshold):
+    detections['detection_classes'] = np.array(detections["detection_classes"]).astype(np.int64)
+    indices = list(filter(lambda idx: detections['detection_scores'][idx] >= threshold,
+                          range(int(detections['num_detections']))))
+
+    for (key, value) in detections.items():
+        if key != 'num_detections':
+            detections[key] = np.take(detections[key], indices, 0)
+    return detections
