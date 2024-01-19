@@ -21,6 +21,9 @@ class BoundingBox:
         self.xmin = xmin * width
         self.xmax = xmax * width
 
+        self.width = abs(self.xmin - self.xmax)
+        self.height = abs(self.ymin - self.ymax)
+
         self.left_top = (xmin * width, ymin * height)
         self.left_bottom = (xmin * width, ymax * height)
         self.right_bottom = (xmax * width, ymax * height)
@@ -33,8 +36,16 @@ class BoundingBox:
         self.text = None
         self.key_points = None
 
-    def crop(self, image):
-        return image.crop((*self.left_top, *self.right_bottom))
+    def crop(self, image, padding=None):
+        if padding is None:
+            return image.crop((*self.left_top, *self.right_bottom))
+        else:
+            return image.crop((
+                self.left_top[0] - padding,
+                self.left_top[1] - padding,
+                self.right_bottom[0] + padding,
+                self.right_bottom[1] + padding
+            ))
 
 
 class BoundingBoxes:

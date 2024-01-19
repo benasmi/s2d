@@ -1,5 +1,8 @@
 import os
 import uuid
+
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 from PIL import Image
 from scipy.spatial import distance
 
@@ -10,6 +13,7 @@ from xmi import diagram_to_xmi
 from ocr import ocr
 
 debug = True
+
 
 def get_closest_box(point, boxes, max_distance=None):
     if not boxes:
@@ -24,6 +28,7 @@ def get_closest_box(point, boxes, max_distance=None):
         return None
 
     return closest_b
+
 
 def gen_json(el):
     return {
@@ -48,17 +53,19 @@ def digitize(path):
     # Do inference
     img_for_plot, detections, category_index = inference.inference(image, min_thresh=.5)
 
-    # Plot inference
-    img_np_array = inference.plot_inference(img_for_plot, detections, category_index)
-
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
 
+    # Plot inference
+    visualise_boxes(image, boxes)
+
     # Digitize text for 'text' boxes
-    for b in boxes.filter_by('text'):
-        img_res = b.crop(image)
+    for b in boxes.filter_by('text', 'use_case'):
+        pad = 4 if b.label == 'text' else None
+        img_res = b.crop(image, padding=pad)
         b.text = ocr.image_to_string(img_res)
-        b.used = "extension points\n" in b.text
+        if b.label == 'text':
+            b.used = "extension points\n" in b.text
 
     # Attach text to elements
     # ---> Set name to use_case elements
@@ -87,9 +94,15 @@ def digitize(path):
         t_b.used = True
         nt_b.text = nt_b.text + "<--->" + t_b.text if nt_b.text is not None else t_b.text
 
+        if "extend" in nt_b.text or "include" in nt_b.text:
+            nt_b.label = "dotted_line"
+            print(nt_b.label)
+
     # Calculate key points
-    for assoc in boxes.filter_by('association'):
+    for assoc in boxes.filter_by('association', 'dotted_line'):
         assoc.key_points = keypoint.calculate_key_points(assoc.crop(image), assoc)
+
+    visualise_boxes(image, boxes)
 
     # Connect association with elements
     diagram = {
@@ -97,7 +110,7 @@ def digitize(path):
         "elements": []
     }
 
-    associations = boxes.filter_by('association')
+    associations = boxes.filter_by('association', 'dotted_line')
     target_elements = boxes.filter_by('use_case', 'actor')
 
     for assoc in associations:
@@ -156,4 +169,34 @@ def digitize(path):
     # Convert to XMI
     xmi = diagram_to_xmi.convert_to_xmi(diagram)
 
-    return xmi, img_np_array
+    return xmi, img_for_plot
+
+
+def visualise_boxes(image, boxes):
+    fig, ax = plt.subplots()
+    ax.imshow(image)
+
+    class_color = {
+        'text': '#27ae60',
+        'association': '#9b59b6',
+        'dotted_line': '#9b59b6',
+        'use_case': '#3498db',
+        'actor': '#2c3e50'
+    }
+    for b in boxes.boxes:
+        c = class_color[b.label]
+        x, y = b.left_top
+
+        rect = patches.Rectangle((x, y), b.width, b.height, linewidth=2, edgecolor=c, facecolor='none')
+        ax.add_patch(rect)
+        ax.text(x, y + 2, b.label + ' ' + str(int(b.score * 100)) + '%', color=c, verticalalignment='top', size=8,
+                weight='bold')
+
+        if b.key_points is not None:
+            ax.scatter(b.key_points.start[0], b.key_points.start[1], c="red", s=20)
+            ax.scatter(b.key_points.end[0], b.key_points.end[1], c="orange", s=20)
+
+    plt.show()
+
+
+digitize("./detection/data/images/PA (22).png")
