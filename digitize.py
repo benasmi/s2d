@@ -201,4 +201,4 @@ def visualise_boxes(image, boxes):
     plt.show()
 
 
-digitize("./detection/data/images/PA (22).png")
+digitize("detection/data/images/PA3.png")
