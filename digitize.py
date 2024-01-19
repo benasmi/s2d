@@ -82,7 +82,8 @@ def digitize(path):
 
         if t_b is not None:
             t_b.used = True
-            uc_b.text = t_b.text
+            if t_b.text.strip():
+                uc_b.text = t_b.text
 
     # ---> Set actor names
     for act_b in boxes.filter_by('actor'):
@@ -90,8 +91,7 @@ def digitize(path):
 
         if t_b is not None:
             t_b.used = True
-            if t_b.text.strip():
-                act_b.text = t_b.text
+            act_b.text = t_b.text
 
     # ---> Set dotted line names
     for t_b in boxes.filter_by('text', used=False):
@@ -105,7 +105,6 @@ def digitize(path):
 
         if "extend" in nt_b.text or "include" in nt_b.text:
             nt_b.label = "dotted_line"
-            print(nt_b.label)
 
     # Calculate key points
     for assoc in boxes.filter_by('association', 'dotted_line'):

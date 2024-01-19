@@ -10,8 +10,6 @@ def img_path_to_string(path):
 
 def image_to_string(image):
     gray = cv2.cvtColor(np.array(image), cv2.COLOR_BGR2GRAY)
-    plt.imshow(gray)
-
     text = pytesseract.image_to_string(gray).strip()
 
     return text
