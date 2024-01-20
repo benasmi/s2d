@@ -184,6 +184,10 @@ def digitize(path):
         diagram['elements'] = [el if el['id'] is not start_kp_el.id else start_kp_el_json for el in diagram['elements']]
         diagram['elements'] = [el if el['id'] is not end_kp_el.id else end_kp_el_json for el in diagram['elements']]
 
+    existing_ids = list(map(lambda x: x['id'], diagram['elements']))
+    for target_el in boxes.filter_by('use_case', 'actor'):
+        if target_el.id not in existing_ids:
+            diagram['elements'].append(gen_json(target_el))
     # Convert to XMI
     xmi = diagram_to_xmi.convert_to_xmi(diagram)
 
@@ -217,4 +221,4 @@ def visualise_boxes(image, boxes):
     plt.show()
 
 
-digitize("detection/data/images/PA3.png")
+digitize("detection/data/images/PA8.png")
