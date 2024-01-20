@@ -27,6 +27,7 @@ class BoundingBox:
         self.right_bottom = (xmax * width, ymax * height)
         self.right_top = (xmax * width, ymin * height)
         self.center = ((xmax * width + xmin * width) / 2, (ymax * height + ymin * height) / 2)
+        self.center_bottom = ((xmax * width + xmin * width) / 2, (ymax * height))
 
         self.label = label
         self.score = score

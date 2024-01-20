@@ -14,8 +14,8 @@ from ocr import ocr
 
 debug_options = {
     'detection': True,
-    'key_points': True,
-    'post_kp': True,
+    'key_points': False,
+    'post_kp': False,
 }
 
 plt.rcParams['figure.figsize'] = [12.0, 8.0]  # Adjust the values as needed
@@ -98,7 +98,7 @@ def digitize(path):
 
     # ---> Set actor names
     for act_b in boxes.filter_by('actor'):
-        t_b = get_closest_box(act_b.center, boxes.filter_by('text', used=False), max_distance=80)
+        t_b = get_closest_box(act_b.center_bottom, boxes.filter_by('text', used=False), max_distance=80)
 
         if t_b is not None:
             t_b.used = True
@@ -227,5 +227,4 @@ def visualise_boxes(image, boxes):
 
     plt.show()
 
-
-digitize("detection/data/images/PA7.png")
+#digitize("detection/data/images/PA.png")
