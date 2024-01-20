@@ -113,7 +113,7 @@ def digitize(path):
 
     # Calculate key points
     for assoc in boxes.filter_by('association', 'dotted_line'):
-        assoc.key_points = keypoint.calculate_key_points(assoc.crop(image), assoc, debug=debug_options['key_points'])
+        assoc.key_points = keypoint.calculate_key_points(image, assoc.crop(image), assoc, debug=debug_options['key_points'])
 
         if debug_options['key_points']:
             visualise_boxes(image, [assoc])
@@ -217,4 +217,4 @@ def visualise_boxes(image, boxes):
     plt.show()
 
 
-digitize("detection/data/images/PA3.png")
+digitize("detection/data/images/new.png")
