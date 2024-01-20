@@ -20,6 +20,7 @@ debug_options = {
 
 plt.rcParams['figure.figsize'] = [12.0, 8.0]  # Adjust the values as needed
 
+
 def get_closest_box(point, boxes, max_distance=None):
     if not boxes:
         return None
@@ -57,7 +58,12 @@ def digitize(path):
     img_for_plot = np.array(image)
 
     # Do inference
-    detections, category_index = inference.inference(image, threshold=.5)
+    detections, category_index = inference.inference(image, threshold={
+        1: 0.6,  # actor
+        2: 0.7,  # use_case
+        3: 0.6,  # text
+        4: 0.25  # association
+    })
 
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
@@ -113,7 +119,8 @@ def digitize(path):
 
     # Calculate key points
     for assoc in boxes.filter_by('association', 'dotted_line'):
-        assoc.key_points = keypoint.calculate_key_points(image, assoc.crop(image), assoc, debug=debug_options['key_points'])
+        assoc.key_points = keypoint.calculate_key_points(image, assoc.crop(image), assoc,
+                                                         debug=debug_options['key_points'])
 
         if debug_options['key_points']:
             visualise_boxes(image, [assoc])
@@ -221,4 +228,4 @@ def visualise_boxes(image, boxes):
     plt.show()
 
 
-digitize("detection/data/images/PA8.png")
+digitize("detection/data/images/PA7.png")

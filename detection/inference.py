@@ -33,7 +33,7 @@ def detect_fn(img):
 
 def threshold_detections(detections, threshold):
     detections['detection_classes'] = np.array(detections["detection_classes"]).astype(np.int64)
-    indices = list(filter(lambda idx: detections['detection_scores'][idx] >= threshold,
+    indices = list(filter(lambda idx: detections['detection_scores'][idx] >= threshold[detections['detection_classes'][idx]],
                           range(int(detections['num_detections']))))
 
     for (key, value) in detections.items():
