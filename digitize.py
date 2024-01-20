@@ -100,7 +100,7 @@ def digitize(path):
 
     # ---> Set dotted line names
     for t_b in boxes.filter_by('text', used=False):
-        nt_b = get_closest_box(t_b.center, boxes.filter_by('association'), max_distance=70)
+        nt_b = get_closest_box(t_b.center, boxes.filter_by('association'), max_distance=120)
 
         if nt_b is None:
             continue
@@ -108,7 +108,7 @@ def digitize(path):
         t_b.used = True
         nt_b.text = nt_b.text + "<--->" + t_b.text if nt_b.text is not None else t_b.text
 
-        if "extend" in nt_b.text or "include" in nt_b.text:
+        if "ext" in nt_b.text.lower() or "inc" in nt_b.text.lower():
             nt_b.label = "dotted_line"
 
     # Calculate key points
@@ -136,15 +136,15 @@ def digitize(path):
         start_kp_el_json = get_or_create_element(diagram, start_kp_el)
         end_kp_el_json = get_or_create_element(diagram, end_kp_el)
 
-        if assoc.label == 'dotted_line' and "include" in assoc.text:
+        if assoc.label == 'dotted_line' and "inc" in assoc.text.lower():
             if 'include' not in start_kp_el_json:
                 start_kp_el_json['include'] = []
             start_kp_el_json['include'].append({
                 'type': 'include',
                 'ref': end_kp_el.id
             })
-        elif assoc.label == 'dotted_line' and "extend" in assoc.text:
-            extensions = list(filter(lambda x: "extend" not in x, assoc.text.split("<--->")))
+        elif assoc.label == 'dotted_line' and "ext" in assoc.text.lower():
+            extensions = list(filter(lambda x: "ext" not in x, assoc.text.lower().split("<--->")))
             extension = extensions[0] if len(extensions) >= 1 else "Default_extension"
 
             extend_id = uuid.uuid4().hex
@@ -217,4 +217,4 @@ def visualise_boxes(image, boxes):
     plt.show()
 
 
-digitize("detection/data/images/new.png")
+digitize("detection/data/images/PA3.png")
