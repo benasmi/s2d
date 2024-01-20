@@ -59,10 +59,10 @@ def digitize(path):
 
     # Do inference
     detections, category_index = inference.inference(image, threshold={
-        1: 0.6,  # actor
+        1: 0.45,  # actor
         2: 0.7,  # use_case
         3: 0.6,  # text
-        4: 0.25  # association
+        4: 0.20  # association
     })
 
     # Map to box items
@@ -227,4 +227,5 @@ def visualise_boxes(image, boxes):
 
     plt.show()
 
-#digitize("detection/data/images/PA.png")
+#digitize("detection/data/images/demo5.png")
+
