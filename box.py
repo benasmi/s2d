@@ -4,11 +4,9 @@ import uuid
 class KeyPoints:
     ext_px = 40
 
-    def __init__(self, start, end, type):
+    def __init__(self, start, end):
         self.start = start
         self.end = end
-        self.type = type
-
 
 class BoundingBox:
     def __init__(self, image, coordinates, label, score):
