@@ -5,10 +5,16 @@
       "id": "use_case_1",
       "type": "use_case",
       "name": "PA1",
-      "include": {
-        "type": "include",
-        "ref": "use_case_2"
-      },
+      "include": [
+        {
+          "type": "include",
+          "ref": "use_case_2"
+        },
+        {
+          "type": "include",
+          "ref": "use_case_4"
+        }
+      ],
       "extend_from": {
         "type": "extension_point",
         "extend_id": "extension_1",
@@ -20,6 +26,11 @@
       "id": "use_case_2",
       "type": "use_case",
       "name": "PA2"
+    },
+    {
+      "id": "use_case_4",
+      "type": "use_case",
+      "name": "PA4"
     },
     {
       "id": "use_case_3",

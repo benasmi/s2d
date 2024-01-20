@@ -66,7 +66,12 @@ def digitize(path):
     if debug_options['detection']:
         visualise_boxes(image, boxes.boxes)
 
-    # Digitize text for 'text' boxes
+    '''
+    Digitize text for 'text' and 'use_case' boxes.
+    Sometimes 'text' or 'use_case' boxes are not digitized by OCR,
+    thus additionally trying to digitize both boxes 
+    highly increases chance of successful `use_case` name resolving 
+    '''
     for b in boxes.filter_by('text', 'use_case'):
         pad = 3 if b.label == 'text' else None
 
@@ -132,10 +137,12 @@ def digitize(path):
         end_kp_el_json = get_or_create_element(diagram, end_kp_el)
 
         if assoc.label == 'dotted_line' and "include" in assoc.text:
-            start_kp_el_json['include'] = {
+            if 'include' not in start_kp_el_json:
+                start_kp_el_json['include'] = []
+            start_kp_el_json['include'].append({
                 'type': 'include',
                 'ref': end_kp_el.id
-            }
+            })
         elif assoc.label == 'dotted_line' and "extend" in assoc.text:
             extensions = list(filter(lambda x: "extend" not in x, assoc.text.split("<--->")))
             extension = extensions[0] if len(extensions) >= 1 else "Default_extension"

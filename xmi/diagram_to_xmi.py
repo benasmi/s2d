@@ -47,8 +47,7 @@ def create_packaged_el(symbol) -> ET.Element:
         el.set("name", symbol['name'])
 
     if 'include' in symbol:
-        include_el = create_include_el(symbol['include'])
-        el.append(include_el)
+        [el.append(create_include_el(inc)) for inc in symbol['include']]
 
     if 'extend_from' in symbol:
         extension_point_el = create_extension_point_el(symbol['extend_from'])
