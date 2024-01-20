@@ -48,14 +48,11 @@ def calculate_low_width_key_points(image, box):
     width, height = image.size
 
     mp_x = (box.xmin + box.xmax) / 2
-    keypoint = (mp_x, box.ymin), (mp_x, box.ymax)
-    extended_keypoint = (mp_x, box.ymin - extend_kp_px), (mp_x, box.ymax + extend_kp_px)
+    t_kp = (mp_x, box.ymin)
+    b_kp = (mp_x, box.ymax)
 
-    # todo: implement
-    bottom_box = image.crop(0, height - 40, width, height)
-    top_box = image.crop(0, 0, width, 40)
-
-    return keypoint, extended_keypoint
+    #todo: implement start/end
+    return KeyPoints(t_kp, b_kp)
 
 
 def calculate_low_height_key_points(image, box):
