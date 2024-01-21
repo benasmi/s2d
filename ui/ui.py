@@ -1,5 +1,6 @@
 from tkinter import *
 import customtkinter as ct
+import numpy as np
 from PIL import Image, ImageTk
 from tkinter import filedialog as fd
 from digitize import digitize
@@ -192,7 +193,7 @@ class App(ct.CTk):
 
         # Create a new thread to execute the time-consuming operation
         path = self.diagram_path.cget("text")
-        xmi, img_np_array = digitize(path)
+        xmi, inference_plot = digitize(path)
 
         self.diagram_path.grid(row=0, column=0, padx=15, pady=0)
         self.diagram_path.configure(text=self.name)
@@ -207,7 +208,7 @@ class App(ct.CTk):
         self.diagram_xmi_preview.insert(ct.END, formatted_xml)
         self.diagram_xmi_preview.configure(state=ct.DISABLED)
 
-        inference_img = Image.fromarray(img_np_array)
+        inference_img = Image.fromarray(np.array(inference_plot))
         width = 800
         aspect_ratio = inference_img.width / inference_img.height
         new_height = int(width / aspect_ratio)

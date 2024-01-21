@@ -1,11 +1,11 @@
 import os
 import uuid
+import io
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
 from scipy.spatial import distance
-
 import box
 from detection import inference
 from keypoint import keypoint
@@ -125,7 +125,7 @@ def digitize(path):
         if debug_options['key_points']:
             visualise_boxes(image, [assoc])
 
-    visualise_boxes(image, boxes.boxes)
+    inference_plot = visualise_boxes(image, boxes.boxes)
 
     # Connect association with elements
     diagram = {
@@ -198,7 +198,7 @@ def digitize(path):
     # Convert to XMI
     xmi = diagram_to_xmi.convert_to_xmi(diagram)
 
-    return xmi, img_for_plot
+    return xmi, inference_plot
 
 
 def visualise_boxes(image, boxes):
@@ -226,6 +226,12 @@ def visualise_boxes(image, boxes):
             ax.scatter(b.key_points.end[0], b.key_points.end[1], c="orange", s=20)
 
     plt.show()
+
+    buffer = io.BytesIO()
+    ax.figure.canvas.print_png(buffer)
+    buffer.seek(0)  # Move the cursor to the beginning of the buffer
+
+    return Image.open(buffer)
 
 #digitize("detection/data/images/demo5.png")
 
