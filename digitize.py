@@ -14,7 +14,7 @@ from ocr import ocr
 
 debug_options = {
     'detection': True,
-    'key_points': False,
+    'key_points': True,
     'post_kp': False,
 }
 
@@ -23,7 +23,7 @@ plt.rcParams['figure.figsize'] = [12.0, 8.0]  # Adjust the values as needed
 
 def get_closest_box(point, boxes, max_distance=None):
     if not boxes:
-        return None
+        return None, -1
 
     closest_b, min_distance = min(
         ((b, distance.euclidean(point, b.center)) for b in boxes),
@@ -31,9 +31,9 @@ def get_closest_box(point, boxes, max_distance=None):
     )
 
     if max_distance is not None and min_distance > max_distance:
-        return None
+        return None, -1
 
-    return closest_b
+    return closest_b, min_distance
 
 
 def gen_json(el):
@@ -82,14 +82,14 @@ def digitize(path):
         pad = 3 if b.label == 'text' else None
 
         img_res = b.crop(image, padding=pad)
-        b.text = ocr.image_to_string(img_res)
+        b.text = ocr.ocr(img_res)
         if b.label == 'text':
             b.used = "extension points\n" in b.text
 
     # Attach text to elements
     # ---> Set name to use_case elements
     for uc_b in boxes.filter_by('use_case'):
-        t_b = get_closest_box(uc_b.center, boxes.filter_by('text', used=False), max_distance=50)
+        t_b, _ = get_closest_box(uc_b.center, boxes.filter_by('text', used=False), max_distance=50)
 
         if t_b is not None:
             t_b.used = True
@@ -98,7 +98,7 @@ def digitize(path):
 
     # ---> Set actor names
     for act_b in boxes.filter_by('actor'):
-        t_b = get_closest_box(act_b.center_bottom, boxes.filter_by('text', used=False), max_distance=80)
+        t_b, _ = get_closest_box(act_b.center_bottom, boxes.filter_by('text', used=False), max_distance=80)
 
         if t_b is not None:
             t_b.used = True
@@ -106,16 +106,25 @@ def digitize(path):
 
     # ---> Set dotted line names
     for t_b in boxes.filter_by('text', used=False):
-        nt_b = get_closest_box(t_b.center, boxes.filter_by('association'), max_distance=120)
+        nt_b, dist = get_closest_box(t_b.center, boxes.filter_by('association'), max_distance=120)
 
         if nt_b is None:
             continue
+
+        # If not text is found but it's no association center (must be include or extend)
+        if dist < 30 and t_b.text == '':
+            t_b.text = '<<include>>'
+
+        # If text starts with `<`, but ocr didn't parse it correctly
+        if t_b.text.lower().startswith('<') and "ext" not in t_b.text.lower() and "inc" not in t_b.text.lower():
+            t_b.text = '<<include>>'
 
         t_b.used = True
         nt_b.text = nt_b.text + "<--->" + t_b.text if nt_b.text is not None else t_b.text
 
         if "ext" in nt_b.text.lower() or "inc" in nt_b.text.lower():
             nt_b.label = "dotted_line"
+            continue
 
     # Calculate key points
     for assoc in boxes.filter_by('association', 'dotted_line'):
@@ -137,8 +146,8 @@ def digitize(path):
     target_elements = boxes.filter_by('use_case', 'actor')
 
     for assoc in associations:
-        start_kp_el = get_closest_box(assoc.key_points.start, target_elements)
-        end_kp_el = get_closest_box(assoc.key_points.end, target_elements)
+        start_kp_el, _ = get_closest_box(assoc.key_points.start, target_elements)
+        end_kp_el, _ = get_closest_box(assoc.key_points.end, target_elements)
 
         start_kp_el_json = get_or_create_element(diagram, start_kp_el)
         end_kp_el_json = get_or_create_element(diagram, end_kp_el)

@@ -7,8 +7,8 @@ mid_point_kp_thresh = 6.5
 
 
 def calculate_key_points(image, box_image, box, debug=False):
-    if debug:
-        box_image.show()
+    #if debug:
+    #    box_image.show()
 
     width_ratio = box_image.size[0] / image.size[0] * 100
     height_ratio = box_image.size[1] / image.size[1] * 100
