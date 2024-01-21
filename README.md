@@ -99,6 +99,15 @@ Start `ui/ui.py` from within _PyCharm Community IDE_. Uploaded diagram can be co
 It's possible to view the inference, generated XMI result and to save the XMI file locally.
 You can try using diagrams from `detection/data/demonstration` folder or you can try giving any other use case diagrams from the wild.
 
+Debug options can be tweaked in this dictionary (`digitize.py`):
+```python
+debug_options = {
+    'detection': True,
+    'key_points': False,
+    'post_kp': False,
+}
+```
+
 A few things to note:
 1. In the current version, generalization is not taken into account;
 2. OCR component has pretty low accuracy, thus it affects the whole tool accuracy;
