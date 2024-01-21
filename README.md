@@ -96,7 +96,14 @@ brew install tesseract
 ## 5. Start project
 
 Start `ui/ui.py` from within _PyCharm Community IDE_. Uploaded diagram can be converted.
-It's possible to view the inference, generated XMI result and to save the XMI file locally. 
+It's possible to view the inference, generated XMI result and to save the XMI file locally.
+You can try using diagrams from `detection/data/demonstration` folder or you can try giving any other use case diagrams from the wild.
+
+A few things to note:
+1. In the current version, generalization is not taken into account;
+2. OCR component has pretty low accuracy, thus it affects the whole tool accuracy;
+3. Association multiplicity is not being serialized;
+4. Tool does not work great with associations that are interwined.
 
 _Main UI screen_
 ![Main UI screen](./doc/images/ui.png)
