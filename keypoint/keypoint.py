@@ -27,11 +27,12 @@ def calculate_box_key_points(image, box):
     crop_size = 20
     bottom_left_box = pixels(image.crop((0, height - crop_size, crop_size, height)))
     top_right_box = pixels(image.crop((width - crop_size, 0, width, crop_size)))
-    bl_tr_aggregate = bottom_left_box + top_right_box
+    # Both corners must have some pixels if it's truly an association
+    bl_tr_aggregate = bottom_left_box + top_right_box if bottom_left_box != 0 and top_right_box != 0 else 0
 
     bottom_right_box = pixels(image.crop((width - crop_size, height - crop_size, width, height)))
     top_left_box = pixels(image.crop((0, 0, crop_size, crop_size)))
-    br_tl_aggregate = bottom_right_box + top_left_box
+    br_tl_aggregate = bottom_right_box + top_left_box if bottom_right_box != 0 and top_left_box != 0 else 0
 
     # line from bottom left to top right
     if bl_tr_aggregate > br_tl_aggregate:
