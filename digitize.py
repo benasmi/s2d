@@ -10,8 +10,10 @@ import box
 from detection import inference
 from keypoint import keypoint
 from xmi import diagram_to_xmi
-from ocr import ocr
-
+from ocr import tesseract_ocr, cloud_vision_ocr
+import matplotlib
+matplotlib.use('TkAgg')
+cloud_vision_enabled = True
 debug_options = {
     'detection': True,
     'key_points': True,
@@ -68,23 +70,28 @@ def digitize(path):
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
 
+    '''
+    Toggle this option to use Google Cloud Vision OCR or Tesseract OCR
+    '''
+    if not cloud_vision_enabled:
+        for b in boxes.filter_by('text', 'use_case'):
+            pad = 3 if b.label == 'text' else None
+
+            img_res = b.crop(image, padding=pad)
+            b.text = tesseract_ocr.ocr(img_res)
+            if b.label == 'text':
+                b.used = "extension points\n" in b.text
+    else:
+        # Utilise cloud vision text blocks
+        text_blocks = cloud_vision_ocr.ocr(image)
+        boxes.boxes = boxes.filter_by('use_case', 'association', 'actor')
+        for text_block in text_blocks:
+            boxes.add_box(image, text_block)
+        print("")
+
     # Plot inference
     if debug_options['detection']:
         visualise_boxes(image, boxes.boxes)
-
-    '''
-    Digitize text for 'text' and 'use_case' boxes.
-    Sometimes 'text' or 'use_case' boxes are not digitized by OCR,
-    thus additionally trying to digitize both boxes 
-    highly increases chance of successful `use_case` name resolving 
-    '''
-    for b in boxes.filter_by('text', 'use_case'):
-        pad = 3 if b.label == 'text' else None
-
-        img_res = b.crop(image, padding=pad)
-        b.text = ocr.ocr(img_res)
-        if b.label == 'text':
-            b.used = "extension points\n" in b.text
 
     # Attach text to elements
     # ---> Set name to use_case elements
@@ -242,5 +249,5 @@ def visualise_boxes(image, boxes):
 
     return Image.open(buffer)
 
-#digitize("detection/data/images/demo5.png")
+digitize("detection\data\demonstration\img.png")
 

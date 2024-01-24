@@ -8,8 +8,9 @@ class KeyPoints:
         self.start = start
         self.end = end
 
+
 class BoundingBox:
-    def __init__(self, image, coordinates, label, score):
+    def __init__(self, image, coordinates, label, score, text=None):
         width, height = image.size
         ymin, xmin, ymax, xmax = coordinates[0:4]
 
@@ -32,7 +33,7 @@ class BoundingBox:
         self.label = label
         self.score = score
         self.used = False
-        self.text = None
+        self.text = text
         self.key_points = None
 
     def crop(self, image, padding=None):
@@ -57,6 +58,18 @@ class BoundingBoxes:
                 detections['detection_scores']
             )
         ]
+
+    def add_box(self, image, text_box):
+        width, height = image.size
+
+        xmin = text_box['bounding_box'][0].x / width
+        ymin = text_box['bounding_box'][0].y / height
+
+        xmax = text_box['bounding_box'][2].x / width
+        ymax = text_box['bounding_box'][2].y / height
+
+        self.boxes.append(
+            BoundingBox(image, [ymin, xmin, ymax, xmax], "text", text_box['confidence'], text_box['text']))
 
     def filter_by(self, *labels, used=None, custom_filter=None):
         filter_func = lambda x: x.label in labels \
