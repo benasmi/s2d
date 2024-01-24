@@ -1,7 +1,6 @@
 import os
 import uuid
 import io
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
@@ -13,6 +12,7 @@ from xmi import diagram_to_xmi
 from ocr import tesseract_ocr, cloud_vision_ocr
 import matplotlib
 matplotlib.use('TkAgg')
+
 cloud_vision_enabled = True
 debug_options = {
     'detection': True,
@@ -57,7 +57,6 @@ def digitize(path):
     abs_file_path = os.path.join(script_dir, path)
     image = Image.open(abs_file_path)
     image = image.convert("RGB")
-    img_for_plot = np.array(image)
 
     # Do inference
     detections, category_index = inference.inference(image, threshold={
@@ -70,9 +69,7 @@ def digitize(path):
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
 
-    '''
-    Toggle this option to use Google Cloud Vision OCR or Tesseract OCR
-    '''
+    # Toggle this option to use Google Cloud Vision OCR or Tesseract OCR
     if not cloud_vision_enabled:
         for b in boxes.filter_by('text', 'use_case'):
             pad = 3 if b.label == 'text' else None
