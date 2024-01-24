@@ -2,7 +2,7 @@ from google.cloud import vision
 from io import BytesIO
 
 client = vision.ImageAnnotatorClient()
-
+acceptable_confidence = 65
 
 def ocr(image):
     image_bytes = BytesIO()
@@ -17,8 +17,8 @@ def ocr(image):
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
-
-    return [result for page in response.full_text_annotation.pages for result in process_page(page)]
+    blocks = [result for page in response.full_text_annotation.pages for result in process_page(page)]
+    return filter(lambda block: block['confidence'] >= acceptable_confidence, blocks)
 
 
 def get_word_text(word):
