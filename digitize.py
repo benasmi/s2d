@@ -82,12 +82,10 @@ def digitize(path):
             if b.label == 'text':
                 b.used = "extension points\n" in b.text
     else:
-        # Utilise cloud vision text blocks
         text_blocks = cloud_vision_ocr.ocr(image)
         boxes.boxes = boxes.filter_by('use_case', 'association', 'actor')
         for text_block in text_blocks:
             boxes.add_box(image, text_block)
-        print("")
 
     # Plot inference
     if debug_options['detection']:
