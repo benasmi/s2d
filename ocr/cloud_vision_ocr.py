@@ -9,7 +9,6 @@ def ocr(image):
     image.save(image_bytes, format='JPEG')
 
     image = vision.Image(content=image_bytes.getvalue())
-
     response = client.document_text_detection(image=image)
 
     if response.error.message:
