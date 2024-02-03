@@ -1,7 +1,7 @@
 <annotation>
-	<folder>Diagrams 1</folder>
+	<folder>diagrams</folder>
 	<filename>PA (212).JPG</filename>
-	<path>C:\Users\benas\Desktop\Diagrams 1\PA (212).JPG</path>
+	<path>/Users/gabija/Desktop/diagrams/PA (212).JPG</path>
 	<source>
 		<database>Unknown</database>
 	</source>
@@ -360,7 +360,7 @@
 		</bndbox>
 	</object>
 	<object>
-		<name>association</name>
+		<name>generalization</name>
 		<pose>Unspecified</pose>
 		<truncated>0</truncated>
 		<difficult>0</difficult>

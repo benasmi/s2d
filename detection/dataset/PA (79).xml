@@ -1,7 +1,7 @@
 <annotation>
-	<folder>Diagrams</folder>
+	<folder>diagrams</folder>
 	<filename>PA (79).PNG</filename>
-	<path>C:\Users\benas\Desktop\Diagrams\PA (79).PNG</path>
+	<path>/Users/gabija/Desktop/diagrams/PA (79).PNG</path>
 	<source>
 		<database>Unknown</database>
 	</source>
@@ -108,7 +108,7 @@
 		</bndbox>
 	</object>
 	<object>
-		<name>association</name>
+		<name>generalization</name>
 		<pose>Unspecified</pose>
 		<truncated>0</truncated>
 		<difficult>0</difficult>

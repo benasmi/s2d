@@ -1,7 +1,7 @@
 <annotation>
-	<folder>Diagrams</folder>
+	<folder>diagrams</folder>
 	<filename>PA (178).JPG</filename>
-	<path>C:\Users\benas\Desktop\Diagrams\PA (178).JPG</path>
+	<path>/Users/gabija/Desktop/diagrams/PA (178).JPG</path>
 	<source>
 		<database>Unknown</database>
 	</source>
@@ -252,7 +252,7 @@
 		</bndbox>
 	</object>
 	<object>
-		<name>association</name>
+		<name>generalization</name>
 		<pose>Unspecified</pose>
 		<truncated>0</truncated>
 		<difficult>0</difficult>
@@ -285,6 +285,18 @@
 			<ymin>236</ymin>
 			<xmax>744</xmax>
 			<ymax>448</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>generalization</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1682</xmin>
+			<ymin>291</ymin>
+			<xmax>1733</xmax>
+			<ymax>644</ymax>
 		</bndbox>
 	</object>
 </annotation>

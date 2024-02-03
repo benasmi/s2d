@@ -1,7 +1,7 @@
 <annotation>
-	<folder>Diagrams</folder>
+	<folder>UC_dataset</folder>
 	<filename>PA (155).png</filename>
-	<path>C:\Users\benas\Desktop\Diagrams\PA (155).png</path>
+	<path>C:\Users\benas\Desktop\UC_dataset\PA (155).png</path>
 	<source>
 		<database>Unknown</database>
 	</source>
@@ -309,6 +309,18 @@
 			<ymin>713</ymin>
 			<xmax>464</xmax>
 			<ymax>757</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>text</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>818</xmin>
+			<ymin>814</ymin>
+			<xmax>894</xmax>
+			<ymax>839</ymax>
 		</bndbox>
 	</object>
 </annotation>

@@ -1,7 +1,7 @@
-<annotation>
-	<folder>Diagrams</folder>
+<annotation verified="yes">
+	<folder>UC_dataset</folder>
 	<filename>PA (148).png</filename>
-	<path>C:\Users\benas\Desktop\Diagrams\PA (148).png</path>
+	<path>C:\Users\benas\Desktop\UC_dataset\PA (148).png</path>
 	<source>
 		<database>Unknown</database>
 	</source>
@@ -360,7 +360,7 @@
 		</bndbox>
 	</object>
 	<object>
-		<name>association</name>
+		<name>generalization</name>
 		<pose>Unspecified</pose>
 		<truncated>0</truncated>
 		<difficult>0</difficult>
