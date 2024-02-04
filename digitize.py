@@ -9,7 +9,7 @@ import box
 from detection import inference
 from keypoint import keypoint
 from xmi import diagram_to_xmi
-from ocr import tesseract_ocr, cloud_vision_ocr
+#from ocr import tesseract_ocr, cloud_vision_ocr
 import matplotlib
 matplotlib.use('TkAgg')
 
@@ -61,15 +61,18 @@ def digitize(path):
     # Do inference
     detections, category_index = inference.inference(image, threshold={
         1: 0.45,  # actor
-        2: 0.7,  # use_case
-        3: 0.6,  # text
-        4: 0.20  # association
+        2: 0.70,   # use_case
+        3: 0.60,   # text
+        4: 0.20,  # association
+        5: 0.20   # generalization
     })
 
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
 
     # Toggle this option to use Google Cloud Vision OCR or Tesseract OCR
+    '''
+    
     if not cloud_vision_enabled:
         for b in boxes.filter_by('text', 'use_case'):
             pad = 3 if b.label == 'text' else None
@@ -83,7 +86,7 @@ def digitize(path):
         boxes.boxes = boxes.filter_by('use_case', 'association', 'actor')
         for text_block in text_blocks:
             boxes.add_box(image, text_block)
-
+    '''
     # Plot inference
     if debug_options['detection']:
         visualise_boxes(image, boxes.boxes)
@@ -221,7 +224,8 @@ def visualise_boxes(image, boxes):
         'association': '#9b59b6',
         'dotted_line': '#9b59b6',
         'use_case': '#3498db',
-        'actor': '#2c3e50'
+        'actor': '#2c3e50',
+        'generalization': '#f1c40f'
     }
     for b in boxes:
         c = class_color[b.label]
@@ -244,5 +248,5 @@ def visualise_boxes(image, boxes):
 
     return Image.open(buffer)
 
-digitize("detection\data\demonstration\img.png")
+digitize("detection\demonstration\\demo6.png")
 

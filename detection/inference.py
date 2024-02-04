@@ -6,7 +6,8 @@ label_map = {
     1: {'id': 1, 'name': 'actor'},
     2: {'id': 2, 'name': 'use_case'},
     3: {'id': 3, 'name': 'text'},
-    4: {'id': 4, 'name': 'association'}
+    4: {'id': 4, 'name': 'association'},
+    5: {'id': 5, 'name': 'generalization'}
 }
 
 
