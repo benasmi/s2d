@@ -4,3 +4,5 @@ tfserve/model/0000001/variables/variables.data-00000-of-00001 filter=lfs diff=lf
 tfserve/model/0000001/variables/variables.index filter=lfs diff=lfs merge=lfs -text
 detection/tfserve/model/0000001/variables/variables.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
 detection/tfserve/model/0000002/variables/variables.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
+detection/tfserve/model/0000003 filter=lfs diff=lfs merge=lfs -text
+detection/tfserve/model/0000003/variables/variables.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text

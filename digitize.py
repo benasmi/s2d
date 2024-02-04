@@ -248,5 +248,5 @@ def visualise_boxes(image, boxes):
 
     return Image.open(buffer)
 
-digitize("detection\demonstration\\demo6.png")
+digitize("detection\demonstration\\demo1.png")
 
