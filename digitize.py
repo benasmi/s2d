@@ -9,7 +9,7 @@ import box
 from detection import inference
 from keypoint import keypoint
 from xmi import diagram_to_xmi
-#from ocr import tesseract_ocr, cloud_vision_ocr
+from ocr import cloud_vision_ocr
 import matplotlib
 matplotlib.use('TkAgg')
 
@@ -70,23 +70,12 @@ def digitize(path):
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
 
-    # Toggle this option to use Google Cloud Vision OCR or Tesseract OCR
-    '''
-    
-    if not cloud_vision_enabled:
-        for b in boxes.filter_by('text', 'use_case'):
-            pad = 3 if b.label == 'text' else None
+    # Text blocks with Google Cloud vision
+    text_blocks = cloud_vision_ocr.ocr(image)
+    boxes.boxes = boxes.filter_by('use_case', 'association', 'actor')
+    for text_block in text_blocks:
+        boxes.add_box(image, text_block)
 
-            img_res = b.crop(image, padding=pad)
-            b.text = tesseract_ocr.ocr(img_res)
-            if b.label == 'text':
-                b.used = "extension points\n" in b.text
-    else:
-        text_blocks = cloud_vision_ocr.ocr(image)
-        boxes.boxes = boxes.filter_by('use_case', 'association', 'actor')
-        for text_block in text_blocks:
-            boxes.add_box(image, text_block)
-    '''
     # Plot inference
     if debug_options['detection']:
         visualise_boxes(image, boxes.boxes)
