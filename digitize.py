@@ -63,6 +63,7 @@ def digitize(path):
     detections, category_index = inference.inference(image, threshold={
         1: 0.45,  # actor
         2: 0.70,  # use_case
+        3: 0.60,  # text
         4: 0.20,  # association
         5: 0.20  # generalization
     }, ignored_classes=['text'])
@@ -135,7 +136,7 @@ def digitize(path):
         "elements": []
     }
 
-    associations = boxes.filter_by('association', 'dotted_line')
+    associations = boxes.filter_by('association', 'dotted_line', 'generalization')
     target_elements = boxes.filter_by('use_case', 'actor')
 
     for assoc in associations:
@@ -237,4 +238,4 @@ def visualise_boxes(image, boxes):
     return Image.open(buffer)
 
 
-digitize("detection\demonstration\\demo1.png")
+digitize("detection\demonstration\\demo5.png")
