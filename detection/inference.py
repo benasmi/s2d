@@ -11,10 +11,10 @@ label_map = {
 }
 
 
-def inference(image, threshold):
+def inference(image, threshold, ignored_classes):
     image_np = np.array(image)
     detections = detect_fn(image_np)
-    thresh_detections = threshold_detections(detections, threshold)
+    thresh_detections = threshold_detections(detections, threshold, ignored_classes)
 
     return thresh_detections, label_map
 
@@ -32,9 +32,9 @@ def detect_fn(img):
     return result['predictions'][0]
 
 
-def threshold_detections(detections, threshold):
+def threshold_detections(detections, threshold, ignored_classes):
     detections['detection_classes'] = np.array(detections["detection_classes"]).astype(np.int64)
-    indices = list(filter(lambda idx: detections['detection_scores'][idx] >= threshold[detections['detection_classes'][idx]],
+    indices = list(filter(lambda idx: detections['detection_scores'][idx] >= threshold[detections['detection_classes'][idx]] and label_map[detections['detection_classes'][idx]]['name'] not in ignored_classes,
                           range(int(detections['num_detections']))))
 
     for (key, value) in detections.items():

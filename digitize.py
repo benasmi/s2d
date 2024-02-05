@@ -11,6 +11,7 @@ from keypoint import keypoint
 from xmi import diagram_to_xmi
 from ocr import cloud_vision_ocr
 import matplotlib
+
 matplotlib.use('TkAgg')
 
 cloud_vision_enabled = True
@@ -61,18 +62,16 @@ def digitize(path):
     # Do inference
     detections, category_index = inference.inference(image, threshold={
         1: 0.45,  # actor
-        2: 0.70,   # use_case
-        3: 0.60,   # text
+        2: 0.70,  # use_case
         4: 0.20,  # association
-        5: 0.20   # generalization
-    })
+        5: 0.20  # generalization
+    }, ignored_classes=['text'])
 
     # Map to box items
     boxes = box.BoundingBoxes(image, detections, category_index)
 
     # Text blocks with Google Cloud vision
     text_blocks = cloud_vision_ocr.ocr(image)
-    boxes.boxes = boxes.filter_by('use_case', 'association', 'actor')
     for text_block in text_blocks:
         boxes.add_box(image, text_block)
 
@@ -237,5 +236,5 @@ def visualise_boxes(image, boxes):
 
     return Image.open(buffer)
 
-digitize("detection\demonstration\\demo1.png")
 
+digitize("detection\demonstration\\demo1.png")
