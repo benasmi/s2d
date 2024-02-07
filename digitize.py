@@ -17,7 +17,7 @@ matplotlib.use('TkAgg')
 cloud_vision_enabled = True
 debug_options = {
     'detection': True,
-    'key_points': True,
+    'key_points': False,
     'post_kp': False,
 }
 
@@ -78,7 +78,7 @@ def digitize(path):
 
     # Plot inference
     if debug_options['detection']:
-        visualise_boxes(image, boxes.boxes)
+        visualise_boxes(image, boxes.boxes, "Initial inference")
 
     # Attach text to elements
     # ---> Set name to use_case elements
@@ -105,12 +105,12 @@ def digitize(path):
         if nt_b is None:
             continue
 
-        # If not text is found but it's no association center (must be include or extend)
+        # If no text is found but it's on association center (must be include or extend)
         if dist < 30 and t_b.text == '':
             t_b.text = '<<include>>'
 
         # If text starts with `<`, but ocr didn't parse it correctly
-        if t_b.text.lower().startswith('<') and "ext" not in t_b.text.lower() and "inc" not in t_b.text.lower():
+        if "<" in t_b.text.lower() and "ext" not in t_b.text.lower() and "inc" not in t_b.text.lower():
             t_b.text = '<<include>>'
 
         t_b.used = True
@@ -121,14 +121,35 @@ def digitize(path):
             continue
 
     # Calculate key points
-    for assoc in boxes.filter_by('association', 'dotted_line'):
+    for assoc in boxes.filter_by('association', 'dotted_line', 'generalization'):
         assoc.key_points = keypoint.calculate_key_points(image, assoc.crop(image), assoc,
                                                          debug=debug_options['key_points'])
 
         if debug_options['key_points']:
-            visualise_boxes(image, [assoc])
+            visualise_boxes(image, [assoc], "Individual keypoint")
 
-    inference_plot = visualise_boxes(image, boxes.boxes)
+    associations = boxes.filter_by('association', 'dotted_line', 'generalization')
+    target_elements = boxes.filter_by('use_case', 'actor')
+
+    # Remove duplicate associations
+    removable_associations = []
+    connections = {}
+    for assoc in associations:
+        start_kp_el, _ = get_closest_box(assoc.key_points.start, target_elements)
+        end_kp_el, _ = get_closest_box(assoc.key_points.end, target_elements)
+        connection_id = hash(start_kp_el.id) + hash(end_kp_el.id)
+        current_association = connections.get(connection_id, None)
+        if current_association is None:
+            connections[connection_id] = assoc
+        else:
+            if current_association.score < assoc.score:
+                connections[connection_id] = assoc
+                removable_associations.append(current_association.id)
+            else:
+                removable_associations.append(assoc.id)
+
+    boxes.remove_by_ids(removable_associations)
+    inference_plot = visualise_boxes(image, boxes.boxes, "Final inference")
 
     # Connect association with elements
     diagram = {
@@ -139,6 +160,7 @@ def digitize(path):
     associations = boxes.filter_by('association', 'dotted_line', 'generalization')
     target_elements = boxes.filter_by('use_case', 'actor')
 
+    # Connect associations
     for assoc in associations:
         start_kp_el, _ = get_closest_box(assoc.key_points.start, target_elements)
         end_kp_el, _ = get_closest_box(assoc.key_points.end, target_elements)
@@ -204,7 +226,7 @@ def digitize(path):
     return xmi, inference_plot
 
 
-def visualise_boxes(image, boxes):
+def visualise_boxes(image, boxes, title):
     fig, ax = plt.subplots()
     ax.imshow(image)
 
@@ -229,6 +251,7 @@ def visualise_boxes(image, boxes):
             ax.scatter(b.key_points.start[0], b.key_points.start[1], c="red", s=20)
             ax.scatter(b.key_points.end[0], b.key_points.end[1], c="orange", s=20)
 
+    plt.title(title)
     plt.show()
 
     buffer = io.BytesIO()
@@ -238,4 +261,4 @@ def visualise_boxes(image, boxes):
     return Image.open(buffer)
 
 
-digitize("detection\demonstration\\demo5.png")
+digitize("detection\demonstration\\demo3.png")

@@ -7,7 +7,7 @@ import os
 client = vision.ImageAnnotatorClient()
 
 
-def ocr(image, acceptable_confidence=0.65):
+def ocr(image, acceptable_confidence=0.45):
     img_hash = image_to_md5(image)
     root_dir = os.path.dirname(os.path.abspath(__file__))
     cache_dir = os.path.join(root_dir, ".cache")

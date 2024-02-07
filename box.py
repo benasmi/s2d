@@ -71,8 +71,11 @@ class BoundingBoxes:
         self.boxes.append(
             BoundingBox(image, [ymin, xmin, ymax, xmax], "text", text_box['confidence'], text_box['text']))
 
+    def remove_by_ids(self, ids):
+        self.boxes = list(filter(lambda x: x.id not in ids, self.boxes))
+
     def filter_by(self, *labels, used=None, custom_filter=None):
-        filter_func = lambda x: x.label in labels \
+        filter_func = lambda x: (x.label in labels) \
                                 and (x.used is used if used is not None else True) \
                                 and (custom_filter(x) if custom_filter else True)
         return list(filter(filter_func, self.boxes))
