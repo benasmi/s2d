@@ -128,10 +128,22 @@ def digitize(path):
         if debug_options['key_points']:
             visualise_boxes(image, [assoc], "Individual keypoint")
 
+    boxes = remove_duplicate_associations(boxes)
+    inference_plot = visualise_boxes(image, boxes.boxes, "Final inference")
+
+    # Connect associations
+    diagram = connect_associations(boxes)
+
+    # Convert to XMI
+    xmi = diagram_to_xmi.convert_to_xmi(diagram)
+
+    return xmi, inference_plot
+
+
+def remove_duplicate_associations(boxes):
     associations = boxes.filter_by('association', 'dotted_line', 'generalization')
     target_elements = boxes.filter_by('use_case', 'actor')
 
-    # Remove duplicate associations
     removable_associations = []
     connections = {}
     for assoc in associations:
@@ -147,10 +159,10 @@ def digitize(path):
                 removable_associations.append(current_association.id)
             else:
                 removable_associations.append(assoc.id)
+    return boxes.remove_by_ids(removable_associations)
 
-    boxes.remove_by_ids(removable_associations)
-    inference_plot = visualise_boxes(image, boxes.boxes, "Final inference")
 
+def connect_associations(boxes):
     # Connect association with elements
     diagram = {
         "name": "Generated UC Diagram",
@@ -160,7 +172,6 @@ def digitize(path):
     associations = boxes.filter_by('association', 'dotted_line', 'generalization')
     target_elements = boxes.filter_by('use_case', 'actor')
 
-    # Connect associations
     for assoc in associations:
         start_kp_el, _ = get_closest_box(assoc.key_points.start, target_elements)
         end_kp_el, _ = get_closest_box(assoc.key_points.end, target_elements)
@@ -220,10 +231,8 @@ def digitize(path):
     for target_el in boxes.filter_by('use_case', 'actor'):
         if target_el.id not in existing_ids:
             diagram['elements'].append(gen_json(target_el))
-    # Convert to XMI
-    xmi = diagram_to_xmi.convert_to_xmi(diagram)
 
-    return xmi, inference_plot
+    return diagram
 
 
 def visualise_boxes(image, boxes, title):

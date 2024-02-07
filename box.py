@@ -73,6 +73,7 @@ class BoundingBoxes:
 
     def remove_by_ids(self, ids):
         self.boxes = list(filter(lambda x: x.id not in ids, self.boxes))
+        return self
 
     def filter_by(self, *labels, used=None, custom_filter=None):
         filter_func = lambda x: (x.label in labels) \
