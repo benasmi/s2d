@@ -154,12 +154,17 @@ def remove_duplicate_associations(boxes):
         if current_association is None:
             connections[connection_id] = assoc
         else:
-            if current_association.score < assoc.score:
+            if boost_assoc_score(current_association, start_kp_el, end_kp_el) \
+                    < boost_assoc_score(assoc, start_kp_el, end_kp_el):
                 connections[connection_id] = assoc
                 removable_associations.append(current_association.id)
             else:
                 removable_associations.append(assoc.id)
     return boxes.remove_by_ids(removable_associations)
+
+
+def boost_assoc_score(assoc, start_el, end_el):
+    return assoc.score + 50 if start_el.label == end_el.label and assoc.label == 'generalization' else assoc.score
 
 
 def connect_associations(boxes):
@@ -270,4 +275,4 @@ def visualise_boxes(image, boxes, title):
     return Image.open(buffer)
 
 
-digitize("detection\demonstration\\demo3.png")
+digitize("detection\demonstration\\demo13.png")
