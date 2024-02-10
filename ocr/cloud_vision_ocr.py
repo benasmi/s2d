@@ -7,6 +7,7 @@ import os
 client = vision.ImageAnnotatorClient()
 ignored_segments = ['ㅈ']
 
+
 def ocr(image, acceptable_confidence=0.45):
     img_hash = image_to_md5(image)
     root_dir = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +35,7 @@ def ocr(image, acceptable_confidence=0.45):
         )
     blocks = [result for page in response.full_text_annotation.pages for result in process_page(page)]
     return filter(lambda block: block['confidence'] >= acceptable_confidence, blocks)
+
 
 def get_word_text(word):
     return "".join([symbol.text for symbol in word.symbols])

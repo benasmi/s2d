@@ -1,6 +1,6 @@
-'''
-Used to validate if images in dataset folder are correct for training
-'''
+"""
+Used to validate if images in dataset folder are correct for TF2 model training
+"""
 
 
 from pathlib import Path

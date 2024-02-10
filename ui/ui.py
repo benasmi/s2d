@@ -7,12 +7,14 @@ from digitize import digitize
 from xml.dom import minidom
 import os
 
+
 class History:
     def __init__(self, name, preview_img, inferenced_img, xmi):
         self.name = name
         self.preview_img = preview_img
         self.inferenced_img = inferenced_img
         self.xmi = xmi
+
 
 class HistoryFrame(ct.CTkScrollableFrame):
     def __init__(self, master, command=None, **kwargs):
@@ -63,9 +65,9 @@ class App(ct.CTk):
         app_label.grid(row=0, column=1, padx=15, pady=15)
 
         self.diagrams_history = HistoryFrame(master=self.left_rail, width=300,
-                                               command=self.view_history,
-                                               fg_color="transparent",
-                                               corner_radius=0)
+                                             command=self.view_history,
+                                             fg_color="transparent",
+                                             corner_radius=0)
 
         self.no_history_label = ct.CTkLabel(self.left_rail, text="No digitized diagrams")
         self.no_history_label.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
@@ -93,7 +95,8 @@ class App(ct.CTk):
         self.diagram_inference_btn = ct.CTkButton(master=self.right_rail_actions, text="Show inference",
                                                   command=self.show_inference_frame)
         self.diagram_inference_btn.grid(row=0, column=2, padx=4, pady=4)
-        self.diagram_xmi_btn = ct.CTkButton(master=self.right_rail_actions, text="View XMI", command=self.show_xmi_frame)
+        self.diagram_xmi_btn = ct.CTkButton(master=self.right_rail_actions, text="View XMI",
+                                            command=self.show_xmi_frame)
         self.diagram_xmi_btn.grid(row=0, column=3, padx=4, pady=4)
 
         self.download_btn = ct.CTkButton(master=self.right_rail_actions, text="Save XMI", command=self.save_xmi)
@@ -229,6 +232,7 @@ class App(ct.CTk):
         if file_path:
             with open(file_path, 'w') as file:
                 file.write(self.xmi)
+
 
 if __name__ == "__main__":
     ct.set_appearance_mode("dark")

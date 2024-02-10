@@ -1,5 +1,4 @@
 import uuid
-import json
 from enum import Enum
 import xml.etree.ElementTree as ET
 
@@ -174,6 +173,3 @@ def convert_to_xmi(diagram):
     # Write xmi
     return write_xmi(root_el, diagram['name'])
 
-
-#diagram = json.load(open('./data/diagram.json'))
-#convert_to_xmi(diagram)

@@ -282,5 +282,3 @@ def visualise_boxes(image, boxes, title):
 
     return Image.open(buffer)
 
-
-#digitize("detection/demonstration/demo23.png")
