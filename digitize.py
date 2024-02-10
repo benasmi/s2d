@@ -222,10 +222,12 @@ def connect_associations(boxes):
                 "name": extension
             }
         elif assoc.label == 'generalization':
-            end_kp_el_json['generalization'] = {
+            if 'generalization' not in end_kp_el_json:
+                end_kp_el_json['generalization'] = []
+            end_kp_el_json['generalization'].append({
                 "type": "generalization",
                 "ref": start_kp_el.id
-            }
+            })
         else:
             assoc_el_json = gen_json(assoc)
             assoc_el_json['start'] = start_kp_el.id
@@ -285,4 +287,4 @@ def visualise_boxes(image, boxes, title):
     return Image.open(buffer)
 
 
-digitize("detection\demonstration\\demo13.png")
+digitize("detection/demonstration/demo26.png")

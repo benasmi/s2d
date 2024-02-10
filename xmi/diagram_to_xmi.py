@@ -58,8 +58,7 @@ def create_packaged_el(symbol) -> ET.Element:
         el.append(extend_el)
 
     if 'generalization' in symbol:
-        generalization_el = create_generalization_el(symbol['generalization'])
-        el.append(generalization_el)
+        [el.append(create_generalization_el(inc)) for inc in symbol['generalization']]
 
     if 'start' in symbol:
         association_elements = create_association_elements(symbol)
