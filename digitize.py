@@ -149,6 +149,11 @@ def remove_duplicate_associations(boxes):
     for assoc in associations:
         start_kp_el, _ = get_closest_box(assoc.key_points.start, target_elements)
         end_kp_el, _ = get_closest_box(assoc.key_points.end, target_elements)
+
+        if start_kp_el.id == end_kp_el.id:
+            removable_associations.append(assoc.id)
+            continue
+
         connection_id = hash(start_kp_el.id) + hash(end_kp_el.id)
         current_association = connections.get(connection_id, None)
         if current_association is None:
