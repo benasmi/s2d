@@ -47,18 +47,16 @@ def create_packaged_el(symbol) -> ET.Element:
         el.set("name", symbol['name'])
 
     if 'include' in symbol:
-        [el.append(create_include_el(inc)) for inc in symbol['include']]
+        [el.append(create_include_el(x)) for x in symbol['include']]
 
     if 'extend_from' in symbol:
-        extension_point_el = create_extension_point_el(symbol['extend_from'])
-        el.append(extension_point_el)
+        [el.append(create_extension_point_el(x)) for x in symbol['extend_from']]
 
     if 'extend_to' in symbol:
-        extend_el = create_extend_el(symbol['extend_to'])
-        el.append(extend_el)
+        [el.append(create_extend_el(x)) for x in symbol['extend_to']]
 
     if 'generalization' in symbol:
-        [el.append(create_generalization_el(inc)) for inc in symbol['generalization']]
+        [el.append(create_generalization_el(x)) for x in symbol['generalization']]
 
     if 'start' in symbol:
         association_elements = create_association_elements(symbol)

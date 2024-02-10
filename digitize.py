@@ -195,9 +195,7 @@ def connect_associations(boxes):
         end_kp_el_json = get_or_create_element(diagram, end_kp_el)
 
         if assoc.label == 'dotted_line' and "inc" in assoc.text.lower():
-            if 'include' not in start_kp_el_json:
-                start_kp_el_json['include'] = []
-            start_kp_el_json['include'].append({
+            start_kp_el_json.setdefault('include', []).append({
                 'type': 'include',
                 'ref': end_kp_el.id
             })
@@ -208,23 +206,21 @@ def connect_associations(boxes):
             extend_id = uuid.uuid4().hex
             extension_id = uuid.uuid4().hex
 
-            start_kp_el_json['extend_to'] = {
+            start_kp_el_json.setdefault('extend_to', []).append({
                 "type": 'extend',
                 "ref": end_kp_el.id,
                 "extend_id": extend_id,
                 "extension_id": extension_id,
-            }
+            })
 
-            end_kp_el_json['extend_from'] = {
+            end_kp_el_json.setdefault('extend_from', []).append({
                 "type": "extension_point",
                 "extend_id": extend_id,
                 "extension_id": extension_id,
                 "name": extension
-            }
+            })
         elif assoc.label == 'generalization':
-            if 'generalization' not in end_kp_el_json:
-                end_kp_el_json['generalization'] = []
-            end_kp_el_json['generalization'].append({
+            end_kp_el_json.setdefault('generalization', []).append({
                 "type": "generalization",
                 "ref": start_kp_el.id
             })
@@ -287,4 +283,4 @@ def visualise_boxes(image, boxes, title):
     return Image.open(buffer)
 
 
-digitize("detection/demonstration/demo26.png")
+#digitize("detection/demonstration/demo23.png")
