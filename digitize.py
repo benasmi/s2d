@@ -169,7 +169,12 @@ def remove_duplicate_associations(boxes):
 
 
 def boost_assoc_score(assoc, start_el, end_el):
-    return assoc.score + 50 if start_el.label == end_el.label and assoc.label == 'generalization' else assoc.score
+    if start_el == end_el and assoc.label == 'generalization':
+        return assoc.score + 50
+    elif assoc.label == 'dotted_line':
+        return assoc.score + 100
+    else:
+        return assoc.score
 
 
 def connect_associations(boxes):
