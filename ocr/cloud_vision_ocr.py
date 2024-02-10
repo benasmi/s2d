@@ -5,7 +5,7 @@ from io import BytesIO
 import os
 
 client = vision.ImageAnnotatorClient()
-
+ignored_segments = ['ㅈ']
 
 def ocr(image, acceptable_confidence=0.45):
     img_hash = image_to_md5(image)
@@ -35,7 +35,6 @@ def ocr(image, acceptable_confidence=0.45):
     blocks = [result for page in response.full_text_annotation.pages for result in process_page(page)]
     return filter(lambda block: block['confidence'] >= acceptable_confidence, blocks)
 
-
 def get_word_text(word):
     return "".join([symbol.text for symbol in word.symbols])
 
@@ -46,6 +45,7 @@ def process_paragraph(paragraph):
 
 def process_block(block):
     segments = [segment for paragraph in block.paragraphs for segment in process_paragraph(paragraph)]
+    segments = list(filter(lambda segment: segment not in ignored_segments, segments))
     return {
         'confidence': block.confidence,
         'bounding_box': block.bounding_box.vertices,
