@@ -75,10 +75,8 @@ debug_options = {
 ```
 
 A few things to note:
-1. In the current version, generalization is not taken into account;
-2. OCR component has pretty low accuracy, thus it affects the whole tool accuracy;
-3. Association multiplicity is not being serialized;
-4. Tool does not work great with associations that are interwined.
+1. Association multiplicity is not being serialized;
+2. Tool does not work great with associations that are interwined.
 
 _Main UI screen_
 ![Main UI screen](./doc/images/ui.png)
