@@ -52,8 +52,10 @@ def calculate_low_width_key_points(image, box):
     t_kp = (mp_x, box.ymin)
     b_kp = (mp_x, box.ymax)
 
-    #todo: implement start/end
-    return KeyPoints(t_kp, b_kp)
+    top_box = image.crop((0, 0, width, 40))
+    bottom_box = image.crop((0, height - 40, width, height))
+
+    return KeyPoints(b_kp, t_kp) if pixels(top_box) > pixels(bottom_box) else KeyPoints(t_kp, b_kp)
 
 
 def calculate_low_height_key_points(image, box):
