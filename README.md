@@ -59,7 +59,15 @@ If the service is launched successfully, you should see the following messages:
 ...
 ```
 
-## 4. Start project
+## 4. Google Cloud Vision OCR
+
+The S2D project relies on the Google Cloud Vision OCR, necessitating its setup before project commencement. Initially, the Tesseract OCR library was utilized; however, achieving satisfactory accuracy proved unattainable without significant image pre-processing efforts.
+Thus, before starting the project:
+
+* Setup Cloud Vision OCR [project](https://cloud.google.com/vision/docs)
+* Authenticate using [_gcloud_](https://cloud.google.com/docs/authentication/gcloud)
+
+## 5. Start project
 
 Start `ui/ui.py` from within _PyCharm Community IDE_. Uploaded diagram can be converted.
 It's possible to view the inference, generated XMI result and to save the XMI file locally.
