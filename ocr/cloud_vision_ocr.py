@@ -34,7 +34,7 @@ def ocr(image, acceptable_confidence=0.45):
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
     blocks = [result for page in response.full_text_annotation.pages for result in process_page(page)]
-    return filter(lambda block: block['confidence'] >= acceptable_confidence, blocks)
+    return list(filter(lambda block: block['confidence'] >= acceptable_confidence, blocks))
 
 
 def get_word_text(word):

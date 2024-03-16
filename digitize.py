@@ -100,7 +100,7 @@ def digitize(path):
 
     # ---> Set dotted line names
     for t_b in boxes.filter_by('text', used=False):
-        nt_b, dist = get_closest_box(t_b.center, boxes.filter_by('association'), max_distance=120)
+        nt_b, dist = get_closest_box(t_b.center, boxes.filter_by('association'), max_distance=150)
 
         if nt_b is None:
             continue
