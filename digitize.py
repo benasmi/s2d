@@ -183,7 +183,7 @@ def remove_duplicate_associations(boxes):
 
 
 def boost_assoc_score(assoc, start_el, end_el):
-    if start_el == end_el and assoc.label == 'generalization':
+    if start_el.label == end_el.label and assoc.label == 'generalization':
         return assoc.score + 50
     elif assoc.label == 'dotted_line':
         return assoc.score + 100
@@ -297,4 +297,4 @@ def visualise_boxes(image, boxes, title):
     return Image.open(buffer)
 
 
-digitize("detection/xp/xp7.png")
+digitize("detection/xp/xp14.png")
