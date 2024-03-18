@@ -62,7 +62,7 @@ def digitize(path):
     # Do inference
     detections, category_index = inference.inference(image, threshold={
         1: 0.45,  # actor
-        2: 0.70,  # use_case
+        2: 0.3,  # use_case
         3: 0.60,  # text
         4: 0.20,  # association
         5: 0.20  # generalization
@@ -129,6 +129,8 @@ def digitize(path):
             visualise_boxes(image, [assoc], "Individual keypoint")
 
     boxes = remove_duplicate_associations(boxes)
+    boxes = remove_duplicate_use_cases(boxes)
+
     inference_plot = visualise_boxes(image, boxes.boxes, "Final inference")
 
     # Connect associations
@@ -138,6 +140,18 @@ def digitize(path):
     xmi = diagram_to_xmi.convert_to_xmi(diagram)
 
     return xmi, inference_plot
+
+
+def remove_duplicate_use_cases(boxes):
+    removable_use_cases = set()
+
+    for uc in boxes.filter_by('use_case'):
+        el, dist = get_closest_box(uc.center, list(filter(lambda x: x.id != uc.id and x.id not in removable_use_cases, boxes.filter_by('use_case'))),max_distance=10)
+
+        if el and el.id != uc.id and uc.id not in removable_use_cases:
+            removable_use_cases.add(el.id)
+
+    return boxes.remove_by_ids(removable_use_cases)
 
 
 def remove_duplicate_associations(boxes):
@@ -220,9 +234,9 @@ def connect_associations(boxes):
                 "name": extension
             })
         elif assoc.label == 'generalization':
-            end_kp_el_json.setdefault('generalization', []).append({
+            start_kp_el_json.setdefault('generalization', []).append({
                 "type": "generalization",
-                "ref": start_kp_el.id
+                "ref": end_kp_el.id
             })
         else:
             assoc_el_json = gen_json(assoc)
@@ -282,3 +296,5 @@ def visualise_boxes(image, boxes, title):
 
     return Image.open(buffer)
 
+
+digitize("detection/xp/xp7.png")
