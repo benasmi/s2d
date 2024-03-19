@@ -61,7 +61,7 @@ def digitize(path):
 
     # Do inference
     detections, category_index = inference.inference(image, threshold={
-        1: 0.45,  # actor
+        1: 0.35,  # actor
         2: 0.3,  # use_case
         3: 0.60,  # text
         4: 0.20,  # association
@@ -296,5 +296,5 @@ def visualise_boxes(image, boxes, title):
 
     return Image.open(buffer)
 
-
-digitize("detection/xp/xp14.png")
+# Check xp22.png, xp24.png
+digitize("detection/xp/xp22.png")
