@@ -1,0 +1,95 @@
+<xmi:XMI xmlns:uml="http://www.omg.org/spec/UML/20110701" xmlns:xmi="http://www.omg.org/spec/UML/20110701">
+	<uml:Package xmi:id="6e653d9539e44be1b57bd7e5fe13cc62" xmi:label="Generated UC Diagram" name="Generated UC Diagram">
+		<packagedElement xmi:type="uml:UseCase" xmi:id="72b9d9db3c41449eaa8e6db54d035174" name="Deposit">
+			<generalization xmi:type="uml:Generalization" xmi:id="7c32e4d6eb2f461a9d331cd7780fff81" general="841e512901fb48e29f90c43b45309eab" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="841e512901fb48e29f90c43b45309eab" name="Transaction">
+			<extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="fbc077a458ae471580d9e15e1c95ac54" name="Default_extension" visibility="public">
+				<extension xmi:idref="eb643f6a5bbe4d7789cdb48c99bf992d" />
+			</extensionPoint>
+		</packagedElement>
+		<packagedElement xmi:type="uml:Association" xmi:id="3f706f89704f422fa99df2899032889c">
+			<memberEnd xmi:idref="3f706f89704f422fa99df2899032889c_member_end_1" />
+			<memberEnd xmi:idref="3f706f89704f422fa99df2899032889c_member_end_2" />
+			<navigableOwnedEnd xmi:idref="3f706f89704f422fa99df2899032889c_member_end_1" />
+			<navigableOwnedEnd xmi:idref="3f706f89704f422fa99df2899032889c_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="3f706f89704f422fa99df2899032889c_member_end_1" visibility="private" type="0ca7b1607ce247e79b62aa2805259f61" association="3f706f89704f422fa99df2899032889c" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="3f706f89704f422fa99df2899032889c_member_end_2" visibility="private" type="188af28f25bc49f8a7b53c90da11c99e" association="3f706f89704f422fa99df2899032889c" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="0ca7b1607ce247e79b62aa2805259f61" name="Inquiry" />
+		<packagedElement xmi:type="uml:Actor" xmi:id="188af28f25bc49f8a7b53c90da11c99e" name="Bank">
+			<generalization xmi:type="uml:Generalization" xmi:id="effc30e4d1af492398b3e1dcf5e59eda" general="09b62784be594c1d861465ac52bdf8ad" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="2c2be93499464440999f670089e2655a" name="Invalid PIN">
+			<extend xmi:type="uml:Extend" xmi:id="eb643f6a5bbe4d7789cdb48c99bf992d" visibility="public" extendedCase="841e512901fb48e29f90c43b45309eab">
+				<extensionLocation xmi:idref="fbc077a458ae471580d9e15e1c95ac54" />
+			</extend>
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="db8f5dfdb1c746389cb6a84324cc2cff" name="Withdrawal">
+			<generalization xmi:type="uml:Generalization" xmi:id="7b710a1653054fff9cb5e0a64a953b92" general="841e512901fb48e29f90c43b45309eab" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:Association" xmi:id="948a5e5494b14b2ba07b30a99a7d7b80">
+			<memberEnd xmi:idref="948a5e5494b14b2ba07b30a99a7d7b80_member_end_1" />
+			<memberEnd xmi:idref="948a5e5494b14b2ba07b30a99a7d7b80_member_end_2" />
+			<navigableOwnedEnd xmi:idref="948a5e5494b14b2ba07b30a99a7d7b80_member_end_1" />
+			<navigableOwnedEnd xmi:idref="948a5e5494b14b2ba07b30a99a7d7b80_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="948a5e5494b14b2ba07b30a99a7d7b80_member_end_1" visibility="private" type="c6a851e4840d41598ba3d3972020ea46" association="948a5e5494b14b2ba07b30a99a7d7b80" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="948a5e5494b14b2ba07b30a99a7d7b80_member_end_2" visibility="private" type="6ef7406c6cf64f31b547cf5ad85fa35e" association="948a5e5494b14b2ba07b30a99a7d7b80" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:Actor" xmi:id="c6a851e4840d41598ba3d3972020ea46" name="Operator" />
+		<packagedElement xmi:type="uml:UseCase" xmi:id="6ef7406c6cf64f31b547cf5ad85fa35e" name="System Startup" />
+		<packagedElement xmi:type="uml:Association" xmi:id="82914081b7c14f14a294651cd4e23a75">
+			<memberEnd xmi:idref="82914081b7c14f14a294651cd4e23a75_member_end_1" />
+			<memberEnd xmi:idref="82914081b7c14f14a294651cd4e23a75_member_end_2" />
+			<navigableOwnedEnd xmi:idref="82914081b7c14f14a294651cd4e23a75_member_end_1" />
+			<navigableOwnedEnd xmi:idref="82914081b7c14f14a294651cd4e23a75_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="82914081b7c14f14a294651cd4e23a75_member_end_1" visibility="private" type="9787d37427e84b40803a659d74a67dde" association="82914081b7c14f14a294651cd4e23a75" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="82914081b7c14f14a294651cd4e23a75_member_end_2" visibility="private" type="cd5b531857244c0e84fb6bb3196595f0" association="82914081b7c14f14a294651cd4e23a75" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:Actor" xmi:id="9787d37427e84b40803a659d74a67dde" name="Bank" />
+		<packagedElement xmi:type="uml:UseCase" xmi:id="cd5b531857244c0e84fb6bb3196595f0" name="System Shutdown" />
+		<packagedElement xmi:type="uml:Association" xmi:id="f5815cc741ee4f4781ea7d57e9b2b8db">
+			<memberEnd xmi:idref="f5815cc741ee4f4781ea7d57e9b2b8db_member_end_1" />
+			<memberEnd xmi:idref="f5815cc741ee4f4781ea7d57e9b2b8db_member_end_2" />
+			<navigableOwnedEnd xmi:idref="f5815cc741ee4f4781ea7d57e9b2b8db_member_end_1" />
+			<navigableOwnedEnd xmi:idref="f5815cc741ee4f4781ea7d57e9b2b8db_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="f5815cc741ee4f4781ea7d57e9b2b8db_member_end_1" visibility="private" type="6ef7406c6cf64f31b547cf5ad85fa35e" association="f5815cc741ee4f4781ea7d57e9b2b8db" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="f5815cc741ee4f4781ea7d57e9b2b8db_member_end_2" visibility="private" type="9787d37427e84b40803a659d74a67dde" association="f5815cc741ee4f4781ea7d57e9b2b8db" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="f3b78798a04b422b8127abc12c409041" name="Transfer">
+			<generalization xmi:type="uml:Generalization" xmi:id="f6491aac4d0d4e6981009eb9c772fd46" general="841e512901fb48e29f90c43b45309eab" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:Actor" xmi:id="09b62784be594c1d861465ac52bdf8ad" name="&#50743; Customer" />
+		<packagedElement xmi:type="uml:Association" xmi:id="d6db585f986943da952678d312cfaa9e">
+			<memberEnd xmi:idref="d6db585f986943da952678d312cfaa9e_member_end_1" />
+			<memberEnd xmi:idref="d6db585f986943da952678d312cfaa9e_member_end_2" />
+			<navigableOwnedEnd xmi:idref="d6db585f986943da952678d312cfaa9e_member_end_1" />
+			<navigableOwnedEnd xmi:idref="d6db585f986943da952678d312cfaa9e_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="d6db585f986943da952678d312cfaa9e_member_end_1" visibility="private" type="cd5b531857244c0e84fb6bb3196595f0" association="d6db585f986943da952678d312cfaa9e" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="d6db585f986943da952678d312cfaa9e_member_end_2" visibility="private" type="c6a851e4840d41598ba3d3972020ea46" association="d6db585f986943da952678d312cfaa9e" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="825ec30cf7b049fabdf3295851ee152c" name="Inquiry">
+			<generalization xmi:type="uml:Generalization" xmi:id="7a949e7265f54fd4b46bfae6f77921cf" general="841e512901fb48e29f90c43b45309eab" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:Association" xmi:id="aadaae550261415b89ad567da0e21a55">
+			<memberEnd xmi:idref="aadaae550261415b89ad567da0e21a55_member_end_1" />
+			<memberEnd xmi:idref="aadaae550261415b89ad567da0e21a55_member_end_2" />
+			<navigableOwnedEnd xmi:idref="aadaae550261415b89ad567da0e21a55_member_end_1" />
+			<navigableOwnedEnd xmi:idref="aadaae550261415b89ad567da0e21a55_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="aadaae550261415b89ad567da0e21a55_member_end_1" visibility="private" type="6bf6e8fba9e0488e99ba88137b4206d4" association="aadaae550261415b89ad567da0e21a55" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="aadaae550261415b89ad567da0e21a55_member_end_2" visibility="private" type="09b62784be594c1d861465ac52bdf8ad" association="aadaae550261415b89ad567da0e21a55" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:UseCase" xmi:id="6bf6e8fba9e0488e99ba88137b4206d4" name="Session">
+			<include xmi:type="uml:Include" xmi:id="1f358dd0001a4e6380b15c2901d45f60" visibility="public" addition="841e512901fb48e29f90c43b45309eab" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:Association" xmi:id="e8c8ff42b6eb462aba16a1feedeeaa3e">
+			<memberEnd xmi:idref="e8c8ff42b6eb462aba16a1feedeeaa3e_member_end_1" />
+			<memberEnd xmi:idref="e8c8ff42b6eb462aba16a1feedeeaa3e_member_end_2" />
+			<navigableOwnedEnd xmi:idref="e8c8ff42b6eb462aba16a1feedeeaa3e_member_end_1" />
+			<navigableOwnedEnd xmi:idref="e8c8ff42b6eb462aba16a1feedeeaa3e_member_end_2" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="e8c8ff42b6eb462aba16a1feedeeaa3e_member_end_1" visibility="private" type="ad7da34c5c244588af1fc05e017d39db" association="e8c8ff42b6eb462aba16a1feedeeaa3e" />
+			<ownedEnd xmi:type="uml:Property" xmi:id="e8c8ff42b6eb462aba16a1feedeeaa3e_member_end_2" visibility="private" type="841e512901fb48e29f90c43b45309eab" association="e8c8ff42b6eb462aba16a1feedeeaa3e" />
+		</packagedElement>
+		<packagedElement xmi:type="uml:Actor" xmi:id="ad7da34c5c244588af1fc05e017d39db" name="Bank" />
+	</uml:Package>
+</xmi:XMI>
